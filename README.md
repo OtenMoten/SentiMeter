@@ -1,1 +1,1 @@
-# SentiOmeter
+# SentiMeter
