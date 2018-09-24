@@ -3,12 +3,12 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.SubScene?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToggleButton?>
@@ -49,7 +49,7 @@
               <items>
                   <StackPane fx:id="myStackPane" prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <SubScene fx:id="subScene" height="299.0" width="467.0">
+                        <SubScene fx:id="subScene" height="400.0" width="600.0">
                           <root>
                             <Region />
                           </root>
@@ -95,54 +95,54 @@
                <children>
                   <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: white;">
                            <children>
-                              <ImageView fitHeight="80.0" fitWidth="150.0" layoutX="18.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="myImageViewAlpha" fitHeight="109.0" fitWidth="120.0" layoutX="19.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" visible="false">
                                  <image>
-                                    <Image url="@pictures/crypto_kitty_blue.jpg" />
+                                    <Image url="@pictures/cake_chart.gif" />
                                  </image>
                               </ImageView>
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextArea fx:id="newsAlpha" editable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="200.0" text="News #1" />
+                              <TextArea fx:id="newsAlpha" editable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="160.0" text="News #1" wrapText="true" />
                            </children>
                         </AnchorPane>
                     </items>
                   </SplitPane>
                   <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: white;">
                            <children>
-                              <ImageView fitHeight="80.0" fitWidth="150.0" layoutX="22.0" layoutY="30.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="myImageViewBeta" fitHeight="109.0" fitWidth="120.0" layoutX="17.0" layoutY="13.0" pickOnBounds="true" visible="false">
                                  <image>
-                                    <Image url="@pictures/crypto_kitty_blue.jpg" />
+                                    <Image url="@pictures/formula.gif" />
                                  </image>
                               </ImageView>
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextArea fx:id="newsBeta" editable="false" prefHeight="55.0" prefWidth="200.0" text="News #2" />
+                              <TextArea fx:id="newsBeta" editable="false" prefHeight="55.0" prefWidth="160.0" text="News #2" wrapText="true" />
                            </children>
                         </AnchorPane>
                     </items>
                   </SplitPane>
                   <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #FAFAF5;">
                            <children>
-                              <ImageView fitHeight="80.0" fitWidth="150.0" layoutX="24.0" layoutY="29.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="myImageViewGamma" fitHeight="124.0" fitWidth="150.0" layoutX="4.0" layoutY="6.0" pickOnBounds="true" visible="false">
                                  <image>
-                                    <Image url="@pictures/crypto_kitty_blue.jpg" />
+                                    <Image url="@pictures/loading.gif" />
                                  </image>
                               </ImageView>
                            </children>
                         </AnchorPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                            <children>
-                              <TextArea fx:id="newsGamma" editable="false" prefHeight="55.0" prefWidth="200.0" text="News #3" />
+                              <TextArea fx:id="newsGamma" editable="false" prefHeight="55.0" prefWidth="160.0" text="News #3" wrapText="true" />
                            </children>
                         </AnchorPane>
                     </items>
@@ -156,8 +156,15 @@
                         <Font name="Marlett" size="12.0" />
                      </font>
                   </TextArea>
-                  <TextArea prefHeight="37.0" prefWidth="332.0" />
-                  <ProgressBar prefHeight="37.0" prefWidth="161.0" progress="0.0" />
+                  <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="33.0" prefWidth="0.0" translateX="10.0" HBox.hgrow="NEVER">
+                    <buttons>
+                      <Button fx:id="command_Four" mnemonicParsing="false" text="Cmd 4" />
+                        <Button fx:id="command_Three" mnemonicParsing="false" text="Cmd 3" />
+                        <Button fx:id="News" mnemonicParsing="false" onAction="#stopRunner" prefHeight="25.0" text="Cmd 2" />
+                        <Button fx:id="command_One" mnemonicParsing="false" onAction="#printTweets" text="Print" />
+                    </buttons>
+                  </ButtonBar>
+                  <ImageView fitHeight="33.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
                </children>
             </HBox>
          </children>

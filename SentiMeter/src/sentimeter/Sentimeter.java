@@ -20,6 +20,7 @@ public class Sentimeter extends Application {
 
         stage.setScene(scene);
         stage.show();
+        
     }
     
 }
