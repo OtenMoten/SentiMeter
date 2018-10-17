@@ -73,7 +73,7 @@ public class FXMLDocumentController implements Initializable {
     private long lastTimerCall;
     private AnimationTimer myAnimationTimer;
 
-    public Group createGaugeNode() {
+    public Group createGaugeGroup() {
 
         this.myTwitter = new TwitterAPI("pOpe5ybA2BJnD58t7mV1E0gQj",
                 "EdsgWi8NzYMDRsfLeOZutkV69ZRnor2FXFECWX12SLyhMSf4gn",
@@ -124,14 +124,14 @@ public class FXMLDocumentController implements Initializable {
                 // '.getTweets(...)' will only work with a functional internet-connection.
                 this.myTwitter.getTweets("CNBCFastMoney", 10);
             } catch (NumberFormatException exception) {
-                System.err.println("sentimeter.FXMLDocumentController.createGaugeNode()"
+                System.err.println("sentimeter.FXMLDocumentController.createGaugeGroup()"
                         + exception.getLocalizedMessage());
-                System.out.println("sentimeter.FXMLDocumentController.createGaugeNode()"
+                System.out.println("sentimeter.FXMLDocumentController.createGaugeGroup()"
                         + exception.getLocalizedMessage());
             } catch (Exception exception) {
-                System.err.println("sentimeter.FXMLDocumentController.createGaugeNode()"
+                System.err.println("sentimeter.FXMLDocumentController.createGaugeGroup()"
                         + exception.getLocalizedMessage());
-                System.out.println("sentimeter.FXMLDocumentController.createGaugeNode()"
+                System.out.println("sentimeter.FXMLDocumentController.createGaugeGroup()"
                         + exception.getLocalizedMessage());
             }
             try {
@@ -201,7 +201,7 @@ public class FXMLDocumentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        this.subScene.setRoot(this.createGaugeNode());
+        this.subScene.setRoot(this.createGaugeGroup());
 
         System.out.println("sentimeter.FXMLDocumentController.initialize()");
 
