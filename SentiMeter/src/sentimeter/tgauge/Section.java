@@ -16,73 +16,82 @@ public class Section {
     private ObjectProperty<Arc> area;
 
     public Section(final double START, final double STOP, final Color COLOR) {
-        start = new SimpleDoubleProperty(START);
-        stop = new SimpleDoubleProperty(STOP);
-        color = new SimpleObjectProperty<>(COLOR);
-        area = new SimpleObjectProperty<>(new Arc());
-        validate();
+        this.start = new SimpleDoubleProperty(START);
+        this.stop = new SimpleDoubleProperty(STOP);
+        this.color = new SimpleObjectProperty<>(COLOR);
+        this.area = new SimpleObjectProperty<>(new Arc());
+        this.validate();
     }
 
     public double getStart() {
-        return start.get();
+        return this.start.get();
     }
 
     public void setStart(final double START) {
-        start.set(START);
+        this.start.set(START);
         validate();
     }
 
-    public DoubleProperty startProperty() {
-        return start;
+    public DoubleProperty getStartProperty() {
+        return this.start;
     }
 
     public double getStop() {
-        return stop.get();
+        return this.stop.get();
     }
 
     public void setStop(final double STOP) {
-        stop.set(STOP);
+        this.stop.set(STOP);
         validate();
     }
 
-    public DoubleProperty stopProperty() {
-        return stop;
+    public DoubleProperty getStopProperty() {
+        return this.stop;
     }
 
     public Paint getColor() {
-        return color.get();
+        return this.color.get();
     }
 
     public void setFill(final Color COLOR) {
-        color.set(COLOR);
+        this.color.set(COLOR);
     }
 
-    public ObjectProperty<Color> colorProperty() {
-        return color;
+    public ObjectProperty<Color> getColorProperty() {
+        return this.color;
     }
 
     public Arc getArea() {
-        return area.get();
+        return this.area.get();
     }
 
     public void setArea(final Arc AREA) {
-        area.set(AREA);
+        this.area.set(AREA);
     }
 
-    public ObjectProperty<Arc> areaProperty() {
-        return area;
+    public ObjectProperty<Arc> getAreaProperty() {
+        return this.area;
     }
-
+    
     public boolean contains(final double VALUE) {
-        return ((Double.compare(VALUE, start.get()) >= 0 && Double.compare(VALUE, stop.get()) <= 0));
+        return ((Double.compare(VALUE, this.start.get()) >= 0
+                && Double.compare(VALUE, this.stop.get()) <= 0));
     }
+    
 
+    // Start must be a less value than stop and vice versa.
     private void validate() {
-        if (getStart() > getStop()) {
-            setStart(getStop() - 1);
+        
+        if (this.getStart() > this.getStop()) {
+            // 'Normalize' if this is the case.
+            this.setStart(this.getStop() - 1);
         }
-        if (getStop() < getStart()) {
-            setStop(getStart() + 1);
+        
+        if (this.getStop() < this.getStart()) {
+            // 'Normalize' if this is the case.
+            this.setStop(this.getStart() + 1);
         }
+        
     }
+    
 }

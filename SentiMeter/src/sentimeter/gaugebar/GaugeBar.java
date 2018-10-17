@@ -10,9 +10,9 @@ public class GaugeBar extends Control {
     // 'UUID.randomUUID().toString()' needed, else error-message.
     // Error will be:
     // "Caused by: java.lang.IllegalArgumentException: 
-    // EventType "javafx.event.EventType@5c9f5f72"
-    // with parent "EVENT" already exists [...]"
-    // These constants will be need for the 'this.fireEvent(...)'.
+    // EventType "javafx.event.EventType@5c9f5f72" with
+    // parent "EVENT" already exists [...]".
+    // These both constants will be need for the 'this.fireEvent(...)'.
     public static final EventType<Event> EVENT_TYPE_CHANGE_VALUE
             = new EventType<>(UUID.randomUUID().toString());
     public static final EventType<Event> EVENT_TYPE_CHANGE_MAX_VALUE

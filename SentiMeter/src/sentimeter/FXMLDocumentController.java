@@ -65,58 +65,63 @@ public class FXMLDocumentController implements Initializable {
 
     private Timer myTimer;
     private TimerTask myTimerTask;
-
-    private Boolean runnerTrigger = false;
+    private Boolean myRunnerTrigger = false;
 
     private static final Random RND = new Random();
-    private Section[] sections;
-    private TGauge gauge;
+    private Section[] mySections;
+    private TGauge myTGauge;
     private long lastTimerCall;
-    private AnimationTimer timer;
+    private AnimationTimer myAnimationTimer;
 
     public Group createGaugeNode() {
 
-        this.myTwitter = new TwitterAPI("",
-                "",
-                "",
-                ""
+        this.myTwitter = new TwitterAPI("pOpe5ybA2BJnD58t7mV1E0gQj",
+                "EdsgWi8NzYMDRsfLeOZutkV69ZRnor2FXFECWX12SLyhMSf4gn",
+                "957668170394988544-SzR22oHCmCA42orZQoQZE492XPqHrbi",
+                "xDur4tDbbttekvljyvz9feBqQwbgeyTn29kOeo85k5viY"
         );
 
-        sections = new Section[]{
+        this.mySections = new Section[]{
             new Section(-10.0, -5.0, Color.RED),
             new Section(-5.0, 0.0, Color.ORANGE),
             new Section(0.0, 7.5, Color.YELLOW),
             new Section(7.5, 10.0, Color.YELLOWGREEN)
         };
-        gauge = new TGauge();
-        gauge.setMinValue(-10);
-        gauge.setMaxValue(10);
-        gauge.setThreshold(10);
-        gauge.setSections(sections);
-        lastTimerCall = System.nanoTime();
-        timer = new AnimationTimer() {
+        
+        this.myTGauge = new TGauge();
+        this.myTGauge.setMinValue(-10);
+        this.myTGauge.setMaxValue(10);
+        // If the current value of the SentiMeter is higher than 
+        // the threshold, then a warning-sign is displayed in the SentiMeter.
+        this.myTGauge.setThreshold(5);
+        // Apply the Section-array 'mySections' to 'myTGauge'-object.
+        this.myTGauge.setSections(this.mySections);
+        
+        this.lastTimerCall = System.nanoTime();
+        this.myAnimationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 double lower = -10.0d;
                 double upper = 10.0d;
                 if (now > lastTimerCall + 3_000_000_000l) {
-                    gauge.setValue(RND.nextDouble() * (upper - lower) + lower);
+                    myTGauge.setValue(RND.nextDouble() * (upper - lower) + lower);
                     lastTimerCall = now; 
                 }
             }
         };
 
-        final GaugeBar gaugeBar = new GaugeBar();
+        final GaugeBar myGaugeBar = new GaugeBar();
 
         System.out.println((this.subScene.getLayoutX() + this.subScene.getWidth()) / 2);
         System.out.println((this.subScene.getLayoutY() + this.subScene.getHeight()) / 2);
 
-        gauge.setLayoutX((this.subScene.getLayoutX() + this.subScene.getWidth()) / 4);
-        gauge.setLayoutY(this.subScene.getLayoutY() + this.subScene.getHeight() / 8);
+        this.myTGauge.setLayoutX((this.subScene.getLayoutX() + this.subScene.getWidth()) / 4);
+        this.myTGauge.setLayoutY(this.subScene.getLayoutY() + this.subScene.getHeight() / 8);
 
         this.btnAnalyze.setOnAction((ActionEvent event) -> {
             try {
-                gaugeBar.setValue(new Random().nextInt(100));
+                myGaugeBar.setValue(new Random().nextInt(100));
+                // '.getTweets(...)' will only work with a functional internet-connection.
                 this.myTwitter.getTweets("CNBCFastMoney", 10);
             } catch (NumberFormatException exception) {
                 System.err.println("sentimeter.FXMLDocumentController.createGaugeNode()"
@@ -130,21 +135,22 @@ public class FXMLDocumentController implements Initializable {
                         + exception.getLocalizedMessage());
             }
             try {
+                // First, cancel the current 'run' of 'myTimer'.
                 stopRunner();
+                // Then, start a new 'run'.
                 startRunner();
-                this.runnerTrigger = true;
             } catch (InterruptedException ex) {
                 Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
             }
             setWebViews();
-            timer.start();
+            this.myAnimationTimer.start();
         });
 
-        Group gaugeBarGroup = new Group(gauge);
+        Group myGaugeBarGroup = new Group(myTGauge);
 
         this.subScene.setUserAgentStylesheet("StyleSheet.css");
 
-        return gaugeBarGroup;
+        return myGaugeBarGroup;
 
     }
 
@@ -164,8 +170,9 @@ public class FXMLDocumentController implements Initializable {
         this.myImageViewGamma.setVisible(true);
     }
 
+    // Interacting with 'myTimer' which is a global object.
     public void startRunner() throws InterruptedException {
-        if (this.runnerTrigger == false) {
+        if (this.myRunnerTrigger == false) {
             this.myTimer = new Timer();
             this.myTimerTask = new TimerTask() {
                 @Override
@@ -174,18 +181,21 @@ public class FXMLDocumentController implements Initializable {
                 }
             };
             this.myTimer = new Timer("myTimerString");
-            this.myTimer.scheduleAtFixedRate(myTimerTask, 0L, 1000L);
+            this.myTimer.scheduleAtFixedRate(this.myTimerTask, 0L, 1000L);
+            this.myRunnerTrigger = false;
         }
     }
 
+    // Interacting with 'myTimer' which is a global object.
+    // 'myTimer' needs to be canceled with '.cancel()' before a new 
+    // 'run' (see 'startRunner()') could be started.
     public void stopRunner() {
         if (this.myTimer == null) {
-            System.out.println("The timer was not initiate yet.");
+            System.out.println("The myAnimationTimer was not initiate yet.");
         } else {
             this.myTimer.cancel();
-            this.runnerTrigger = false;
+            this.myRunnerTrigger = false;
         }
-
     }
 
     @Override
