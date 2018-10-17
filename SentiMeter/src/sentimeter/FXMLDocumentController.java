@@ -21,8 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
 import sentimeter.collector.TwitterAPI;
 import sentimeter.gaugebar.GaugeBar;
-import sentimeter.tgauge.Section;
-import sentimeter.tgauge.TGauge;
+import sentimeter.templategauge.Section;
+import sentimeter.templategauge.TemplateGauge;
 
 public class FXMLDocumentController implements Initializable {
 
@@ -69,7 +69,7 @@ public class FXMLDocumentController implements Initializable {
 
     private static final Random RND = new Random();
     private Section[] mySections;
-    private TGauge myTGauge;
+    private TemplateGauge myTGauge;
     private long lastTimerCall;
     private AnimationTimer myAnimationTimer;
 
@@ -88,7 +88,7 @@ public class FXMLDocumentController implements Initializable {
             new Section(7.5, 10.0, Color.YELLOWGREEN)
         };
         
-        this.myTGauge = new TGauge();
+        this.myTGauge = new TemplateGauge();
         this.myTGauge.setMinValue(-10);
         this.myTGauge.setMaxValue(10);
         // If the current value of the SentiMeter is higher than 

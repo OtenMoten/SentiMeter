@@ -1,4 +1,4 @@
-package sentimeter.tgauge;
+package sentimeter.templategauge;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
