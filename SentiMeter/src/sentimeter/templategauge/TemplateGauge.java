@@ -98,13 +98,16 @@ public class TemplateGauge extends Region {
     private Group sectionGroup;
     private ChangeListener<Number> sizeListener;
 
-    // ******************** Constructors **************************************
+    // Constructor
     public TemplateGauge() {
+        
         this.getStylesheets().add(getClass().getResource("StyleSheetTemplateGauge.css").toExternalForm());
+        // Section in file 'StyleSheetTemplateGauge.css'.
         this.getStyleClass().add("templategauge");
+        
         TemplateGauge.ASPECT_RATIO = 400 / 400;
         this.pane = new Pane();
-        this.unitString = new SimpleStringProperty("&&");
+        this.unitString = new SimpleStringProperty("%");
         this.sections = FXCollections.observableArrayList();
         this.value = new SimpleDoubleProperty(0);
         this.minValue = new SimpleDoubleProperty(0);
@@ -114,47 +117,65 @@ public class TemplateGauge extends Region {
         this.threshold = new SimpleDoubleProperty(50);
         this.thresholdExceeded = new SimpleBooleanProperty(false);
         this.thresholdBehaviorInverted = new SimpleBooleanProperty(false);
-        this.angleStep = ANGLE_RANGE / (getMaxValue() - getMinValue());
+        this.angleStep = TemplateGauge.ANGLE_RANGE / (this.getMaxValue() - this.getMinValue());
         this.animated = new SimpleBooleanProperty(true);
         this.backgroundVisible = new SimpleBooleanProperty(true);
         this.timeline = new Timeline();
-        this.needleRotate = new Rotate(-ROTATION_OFFSET);
+        this.needleRotate = new Rotate(- TemplateGauge.ROTATION_OFFSET);
         this.tickLabels = new ArrayList<>();
+        
         init();
         initGraphics();
         registerListeners();
+        
     }
 
     // Initialization
     private void init() {
-        if (Double.compare(getPrefWidth(), 0.0) <= 0 || Double.compare(getPrefHeight(), 0.0) <= 0
-                || Double.compare(getWidth(), 0.0) <= 0 || Double.compare(getHeight(), 0.0) <= 0) {
-            if (getPrefWidth() > 0 && getPrefHeight() > 0) {
-                setPrefSize(getPrefWidth(), getPrefHeight());
+        
+        if (Double.compare(this.getPrefWidth(), 0.0) <= 0
+                || Double.compare(this.getPrefHeight(), 0.0) <= 0
+                || Double.compare(this.getWidth(), 0.0) <= 0
+                || Double.compare(this.getHeight(), 0.0) <= 0) {
+            if (this.getPrefWidth() > 0 && this.getPrefHeight() > 0) {
+                this.setPrefSize(this.getPrefWidth(), this.getPrefHeight());
             } else {
-                setPrefSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                // 'DEFAULT_WIDTH' and 'DEFAULT_HEIGHT' are defined at the beginning of the class.
+                this.setPrefSize(TemplateGauge.DEFAULT_WIDTH, TemplateGauge.DEFAULT_HEIGHT);
             }
+        } else {/**/}
+        
+        // Set default-values if the minimal width or height of this region (the extended class) are
+        // less-equal '0.0'.
+        if (Double.compare(this.getMinWidth(), 0.0) <= 0 || Double.compare(this.getMinHeight(), 0.0) <= 0) {
+            // 'MINIMUM_WIDTH' and 'MINIMUM_HEIGHT' are defined at the beginning of the class.
+            this.setMinSize(TemplateGauge.MINIMUM_WIDTH, TemplateGauge.MINIMUM_HEIGHT);
         }
-
-        if (Double.compare(getMinWidth(), 0.0) <= 0 || Double.compare(getMinHeight(), 0.0) <= 0) {
-            setMinSize(MINIMUM_WIDTH, MINIMUM_HEIGHT);
+        
+        // Set default-values if the maximal width or height of this region (the extended class) are
+        // less-equal '0.0'.
+        if (Double.compare(this.getMaxWidth(), 0.0) <= 0 || Double.compare(this.getMaxHeight(), 0.0) <= 0) {
+            // 'MAXIMUM_WIDTH' and 'MAXIMUM_HEIGHT' are defined at the beginning of the class.
+            this.setMaxSize(TemplateGauge.MAXIMUM_WIDTH, TemplateGauge.MAXIMUM_HEIGHT);
         }
-
-        if (Double.compare(getMaxWidth(), 0.0) <= 0 || Double.compare(getMaxHeight(), 0.0) <= 0) {
-            this.setMaxSize(MAXIMUM_WIDTH, MAXIMUM_HEIGHT);
+        
+        // Calculate the 'ASPECT_RATIO' if the prefered width or height of this region (the extended class) are
+        // different to 'DEFAULT_WIDTH or 'DEFAULT_HEIGHT' which are defined the beginning of the class.
+        if (this.getPrefWidth() != TemplateGauge.DEFAULT_WIDTH || this.getPrefHeight() != TemplateGauge.DEFAULT_HEIGHT) {
+            TemplateGauge.ASPECT_RATIO = this.getPrefHeight() / this.getPrefWidth();
         }
-
-        if (getPrefWidth() != DEFAULT_WIDTH || getPrefHeight() != DEFAULT_HEIGHT) {
-            TemplateGauge.ASPECT_RATIO = getPrefHeight() / getPrefWidth();
-        }
-
-        this.sizeListener = (ObservableValue<? extends Number> ov, Number oldValue, Number newValue) -> {
+        
+        this.sizeListener = (ObservableValue<? extends Number> objectValue, Number oldValue, Number newValue) -> {
+            // Resize the gauge if the listener noticed a change of the GUI's attributes.
             this.resize();
-            TemplateGauge.ASPECT_RATIO = getPrefHeight() / getPrefWidth();
+            // Calculate a new value for 'ASPECT_RATIO' after the gauge was resized.
+            TemplateGauge.ASPECT_RATIO = this.getPrefHeight() / this.getPrefWidth();
         };
+        
     }
 
     private void initGraphics() {
+        
         this.frame = new Region();
         this.frame.getStyleClass().setAll("frame");
 
@@ -167,14 +188,14 @@ public class TemplateGauge extends Region {
         });
 
         this.textDropShadow = DropShadowBuilder.create()
-                .radius(DEFAULT_WIDTH * 0.005)
-                .offsetY(DEFAULT_WIDTH * 0.0025)
+                .radius(TemplateGauge.DEFAULT_WIDTH * 0.005)
+                .offsetY(TemplateGauge.DEFAULT_WIDTH * 0.0025)
                 .blurType(BlurType.GAUSSIAN)
                 .color(Color.rgb(0, 0, 0, 0.65))
                 .build();
 
-        this.tickLabelFont = Font.font("Verdana", FontWeight.BOLD, DEFAULT_WIDTH * 0.04);
-        for (double i = getMinValue(); Double.compare(i, getMaxValue()) <= 0; i += FRACTION) {
+        this.tickLabelFont = Font.font("Verdana", FontWeight.BOLD, TemplateGauge.DEFAULT_WIDTH * 0.04);
+        for (double i = getMinValue(); Double.compare(i, getMaxValue()) <= 0; i += TemplateGauge.FRACTION) {
             Text tickLabel = TextBuilder.create()
                     .font(this.tickLabelFont)
                     .text(String.format("%.0f", i))
@@ -251,7 +272,7 @@ public class TemplateGauge extends Region {
 
         this.alertIndicator = new Canvas();
         this.alertIndicator.visibleProperty().bind(this.thresholdExceeded);
-        drawAlertIndicator(0.124 * DEFAULT_WIDTH, 0.108 * DEFAULT_HEIGHT, Color.RED);
+        this.drawAlertIndicator(0.124 * DEFAULT_WIDTH, 0.108 * DEFAULT_HEIGHT, Color.RED);
 
         this.pane.getChildren().setAll(
                 this.frame,
@@ -265,22 +286,24 @@ public class TemplateGauge extends Region {
                 this.unitText
         );
 
-        getChildren().setAll(this.pane);
-        resize();
+        this.getChildren().setAll(this.pane);
+        this.resize();
+        
     }
 
     private void registerListeners() {
-        widthProperty().addListener(this.sizeListener);
-        heightProperty().addListener(this.sizeListener);
-        prefWidthProperty().addListener(this.sizeListener);
-        prefHeightProperty().addListener(this.sizeListener);
         
+        this.widthProperty().addListener(this.sizeListener);
+        this.heightProperty().addListener(this.sizeListener);
+        this.prefWidthProperty().addListener(this.sizeListener);
+        this.prefHeightProperty().addListener(this.sizeListener);
+
         this.backgroundVisible.addListener((Observable o) -> {
             this.frame.setVisible(isBackgroundVisible());
             this.background.setVisible(isBackgroundVisible());
         });
-        
-        valueProperty().addListener((Observable o) -> {
+
+        valueProperty().addListener((Observable observableObject) -> {
             this.valueText.setText(String.format("%.2f", getValue()));
             rotateNeedle();
             if (getValue() < getMinMeasuredValue()) {
@@ -296,6 +319,7 @@ public class TemplateGauge extends Region {
                 setThresholdExceeded(false);
             }
         });
+        
     }
 
     // Public methods
@@ -690,7 +714,7 @@ public class TemplateGauge extends Region {
         drawAlertIndicator(0.124 * this.size, 0.108 * this.size, Color.RED);
         this.alertIndicator.setTranslateX((this.width - this.alertIndicator.getLayoutBounds().getWidth()) * 0.5);
         this.alertIndicator.setTranslateY(this.height * 0.68);
-        
+
     }
-    
+
 }

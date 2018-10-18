@@ -29,7 +29,7 @@ public class Section {
 
     public void setStart(final double START) {
         this.start.set(START);
-        validate();
+        this.validate();
     }
 
     public DoubleProperty getStartProperty() {
@@ -42,7 +42,7 @@ public class Section {
 
     public void setStop(final double STOP) {
         this.stop.set(STOP);
-        validate();
+        this.validate();
     }
 
     public DoubleProperty getStopProperty() {
