@@ -102,7 +102,7 @@ public class TemplateGauge extends Region {
     public TemplateGauge() {
         this.getStylesheets().add(getClass().getResource("StyleSheetTemplateGauge.css").toExternalForm());
         this.getStyleClass().add("templategauge");
-        this.ASPECT_RATIO = 400 / 400;
+        TemplateGauge.ASPECT_RATIO = 400 / 400;
         this.pane = new Pane();
         this.unitString = new SimpleStringProperty("&&");
         this.sections = FXCollections.observableArrayList();
@@ -125,7 +125,7 @@ public class TemplateGauge extends Region {
         registerListeners();
     }
 
-    // ******************** Initialization ************************************
+    // Initialization
     private void init() {
         if (Double.compare(getPrefWidth(), 0.0) <= 0 || Double.compare(getPrefHeight(), 0.0) <= 0
                 || Double.compare(getWidth(), 0.0) <= 0 || Double.compare(getHeight(), 0.0) <= 0) {
@@ -298,7 +298,7 @@ public class TemplateGauge extends Region {
         });
     }
 
-    // ******************** Public methods ************************************
+    // Public methods
     public final double getValue() {
         return this.value.get();
     }
@@ -464,7 +464,7 @@ public class TemplateGauge extends Region {
 
     @Override
     protected double computePrefWidth(final double PREF_HEIGHT) {
-        double prefHeight = DEFAULT_HEIGHT;
+        double prefHeight = TemplateGauge.DEFAULT_HEIGHT;
         if (PREF_HEIGHT != -1) {
             prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
         }
