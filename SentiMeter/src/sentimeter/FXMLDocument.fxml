@@ -17,157 +17,174 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sentimeter.FXMLDocumentController">
+<AnchorPane id="AnchorPane" minHeight="700.0" minWidth="807.0" prefHeight="700.0" prefWidth="807.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sentimeter.FXMLDocumentController">
    <children>
-      <MenuBar prefHeight="25.0" prefWidth="803.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <FlowPane layoutY="25.0" prefHeight="633.0" prefWidth="776.0">
+      <Pane minHeight="700.0" minWidth="807.0" prefHeight="700.0" prefWidth="807.0">
          <children>
-            <SplitPane dividerPositions="0.7861952861952862" orientation="VERTICAL" prefHeight="596.0" prefWidth="643.0">
-              <items>
-                  <StackPane fx:id="myStackPane" prefHeight="150.0" prefWidth="200.0">
-                     <children>
-                        <SubScene fx:id="subScene" height="400.0" width="600.0">
-                          <root>
-                            <Region />
-                          </root>
-                        </SubScene>
-                     </children>
-                  </StackPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                     <children>
-                        <HBox alignment="CENTER" prefHeight="119.0" prefWidth="636.0">
-                           <children>
-                              <VBox alignment="CENTER" prefHeight="119.0" prefWidth="250.0">
-                                 <children>
-                                    <DatePicker />
-                                    <ComboBox prefHeight="24.0" prefWidth="150.0" promptText="Select source ...">
-                                       <VBox.margin>
-                                          <Insets top="15.0" />
-                                       </VBox.margin>
-                                    </ComboBox>
-                                 </children>
-                              </VBox>
-                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="250.0">
-                                 <children>
-                                    <DatePicker />
-                                    <ToggleButton mnemonicParsing="false" text="Invert">
-                                       <VBox.margin>
-                                          <Insets top="15.0" />
-                                       </VBox.margin>
-                                    </ToggleButton>
-                                 </children>
-                              </VBox>
-                              <Button fx:id="btnAnalyze" mnemonicParsing="false" prefHeight="101.0" prefWidth="125.0" text="Analyze&#10;" textAlignment="JUSTIFY">
-                                 <font>
-                                    <Font name="Marlett" size="22.0" />
-                                 </font>
-                              </Button>
-                           </children>
-                        </HBox>
-                     </children>
-                  </AnchorPane>
-              </items>
-            </SplitPane>
-            <VBox prefHeight="585.0" prefWidth="160.0">
+            <VBox minHeight="700.0" minWidth="807.0" prefHeight="700.0" prefWidth="807.0">
                <children>
-                  <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: white;">
+                  <Pane minHeight="30.0" minWidth="807.0" prefHeight="30.0" prefWidth="807.0">
+                     <children>
+                        <MenuBar minHeight="30.0" minWidth="807.0" prefHeight="30.0" prefWidth="807.0">
+                          <menus>
+                            <Menu mnemonicParsing="false" text="File">
+                              <items>
+                                <MenuItem mnemonicParsing="false" text="Close" />
+                              </items>
+                            </Menu>
+                            <Menu mnemonicParsing="false" text="Edit">
+                              <items>
+                                <MenuItem mnemonicParsing="false" text="Delete" />
+                              </items>
+                            </Menu>
+                            <Menu mnemonicParsing="false" text="Help">
+                              <items>
+                                <MenuItem mnemonicParsing="false" text="About" />
+                              </items>
+                            </Menu>
+                          </menus>
+                        </MenuBar>
+                     </children>
+                  </Pane>
+                  <Pane minHeight="670.0" minWidth="807.0" prefHeight="670.0" prefWidth="807.0">
+                     <children>
+                        <FlowPane minHeight="670.0" minWidth="807.0" prefHeight="670.0" prefWidth="807.0">
                            <children>
-                              <ImageView fx:id="myImageViewAlpha" fitHeight="109.0" fitWidth="120.0" layoutX="19.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" visible="false">
-                                 <image>
-                                    <Image url="@pictures/cake_chart.gif" />
-                                 </image>
-                              </ImageView>
+                              <SplitPane dividerPositions="0.7861952861952862" orientation="VERTICAL" prefHeight="596.0" prefWidth="643.0">
+                                <items>
+                                    <StackPane fx:id="myStackPane" prefHeight="150.0" prefWidth="200.0">
+                                       <children>
+                                          <SubScene fx:id="subScene" height="400.0" width="600.0">
+                                            <root>
+                                              <Region />
+                                            </root>
+                                          </SubScene>
+                                       </children>
+                                    </StackPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                       <children>
+                                          <HBox alignment="CENTER" prefHeight="119.0" prefWidth="636.0">
+                                             <children>
+                                                <VBox alignment="CENTER" prefHeight="119.0" prefWidth="250.0">
+                                                   <children>
+                                                      <DatePicker />
+                                                      <ComboBox prefHeight="24.0" prefWidth="150.0" promptText="Select source ...">
+                                                         <VBox.margin>
+                                                            <Insets top="15.0" />
+                                                         </VBox.margin>
+                                                      </ComboBox>
+                                                   </children>
+                                                </VBox>
+                                                <VBox alignment="CENTER" prefHeight="200.0" prefWidth="250.0">
+                                                   <children>
+                                                      <DatePicker />
+                                                      <ToggleButton mnemonicParsing="false" text="Invert">
+                                                         <VBox.margin>
+                                                            <Insets top="15.0" />
+                                                         </VBox.margin>
+                                                      </ToggleButton>
+                                                   </children>
+                                                </VBox>
+                                                <Button fx:id="btnAnalyze" mnemonicParsing="false" prefHeight="101.0" prefWidth="125.0" text="Analyze&#10;" textAlignment="JUSTIFY">
+                                                   <font>
+                                                      <Font name="Marlett" size="22.0" />
+                                                   </font>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </AnchorPane>
+                                </items>
+                              </SplitPane>
+                              <VBox prefHeight="585.0" prefWidth="160.0">
+                                 <children>
+                                    <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: white;">
+                                             <children>
+                                                <ImageView fx:id="myImageViewAlpha" fitHeight="109.0" fitWidth="120.0" layoutX="19.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true" visible="false">
+                                                   <image>
+                                                      <Image url="@pictures/cake_chart.gif" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                             <children>
+                                                <TextArea fx:id="newsAlpha" editable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="160.0" text="News #1" wrapText="true" />
+                                             </children>
+                                          </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                    <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: white;">
+                                             <children>
+                                                <ImageView fx:id="myImageViewBeta" fitHeight="109.0" fitWidth="120.0" layoutX="17.0" layoutY="13.0" pickOnBounds="true" visible="false">
+                                                   <image>
+                                                      <Image url="@pictures/formula.gif" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                             <children>
+                                                <TextArea fx:id="newsBeta" editable="false" prefHeight="55.0" prefWidth="160.0" text="News #2" wrapText="true" />
+                                             </children>
+                                          </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                    <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                                      <items>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #FAFAF5;">
+                                             <children>
+                                                <ImageView fx:id="myImageViewGamma" fitHeight="124.0" fitWidth="150.0" layoutX="4.0" layoutY="6.0" pickOnBounds="true" visible="false">
+                                                   <image>
+                                                      <Image url="@pictures/loading.gif" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </AnchorPane>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                             <children>
+                                                <TextArea fx:id="newsGamma" editable="false" prefHeight="55.0" prefWidth="160.0" text="News #3" wrapText="true" />
+                                             </children>
+                                          </AnchorPane>
+                                      </items>
+                                    </SplitPane>
+                                 </children>
+                              </VBox>
+                              <HBox prefHeight="4.0" prefWidth="804.0">
+                                 <children>
+                                    <TextArea editable="false" prefHeight="38.0" prefWidth="313.0" text="Online / Offline Status">
+                                       <font>
+                                          <Font name="Marlett" size="12.0" />
+                                       </font>
+                                    </TextArea>
+                                    <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="33.0" prefWidth="0.0" translateX="10.0" HBox.hgrow="NEVER">
+                                      <buttons>
+                                        <Button fx:id="command_Four" mnemonicParsing="false" text="Cmd 4" />
+                                          <Button fx:id="command_Three" mnemonicParsing="false" text="Cmd 3" />
+                                          <Button fx:id="News" mnemonicParsing="false" onAction="#stopRunner" prefHeight="25.0" text="Cmd 2" />
+                                          <Button fx:id="command_One" mnemonicParsing="false" onAction="#printTweets" text="Print" />
+                                      </buttons>
+                                    </ButtonBar>
+                                    <ImageView fitHeight="33.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
+                                 </children>
+                              </HBox>
                            </children>
-                        </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextArea fx:id="newsAlpha" editable="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="160.0" text="News #1" wrapText="true" />
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
-                  <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: white;">
-                           <children>
-                              <ImageView fx:id="myImageViewBeta" fitHeight="109.0" fitWidth="120.0" layoutX="17.0" layoutY="13.0" pickOnBounds="true" visible="false">
-                                 <image>
-                                    <Image url="@pictures/formula.gif" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextArea fx:id="newsBeta" editable="false" prefHeight="55.0" prefWidth="160.0" text="News #2" wrapText="true" />
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
-                  <SplitPane dividerPositions="0.7" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #FAFAF5;">
-                           <children>
-                              <ImageView fx:id="myImageViewGamma" fitHeight="124.0" fitWidth="150.0" layoutX="4.0" layoutY="6.0" pickOnBounds="true" visible="false">
-                                 <image>
-                                    <Image url="@pictures/loading.gif" />
-                                 </image>
-                              </ImageView>
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                              <TextArea fx:id="newsGamma" editable="false" prefHeight="55.0" prefWidth="160.0" text="News #3" wrapText="true" />
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
+                        </FlowPane>
+                     </children>
+                  </Pane>
                </children>
             </VBox>
-            <HBox prefHeight="0.0" prefWidth="804.0">
-               <children>
-                  <TextArea editable="false" prefHeight="38.0" prefWidth="313.0" text="Online / Offline Status">
-                     <font>
-                        <Font name="Marlett" size="12.0" />
-                     </font>
-                  </TextArea>
-                  <ButtonBar nodeOrientation="RIGHT_TO_LEFT" prefHeight="33.0" prefWidth="0.0" translateX="10.0" HBox.hgrow="NEVER">
-                    <buttons>
-                      <Button fx:id="command_Four" mnemonicParsing="false" text="Cmd 4" />
-                        <Button fx:id="command_Three" mnemonicParsing="false" text="Cmd 3" />
-                        <Button fx:id="News" mnemonicParsing="false" onAction="#stopRunner" prefHeight="25.0" text="Cmd 2" />
-                        <Button fx:id="command_One" mnemonicParsing="false" onAction="#printTweets" text="Print" />
-                    </buttons>
-                  </ButtonBar>
-                  <ImageView fitHeight="33.0" fitWidth="160.0" pickOnBounds="true" preserveRatio="true" />
-               </children>
-            </HBox>
          </children>
-      </FlowPane>
+      </Pane>
    </children>
 </AnchorPane>

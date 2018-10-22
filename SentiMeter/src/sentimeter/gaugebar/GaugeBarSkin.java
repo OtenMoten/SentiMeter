@@ -97,8 +97,8 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
         );
         myCircle.setFill(new LinearGradient(1, 0, 0.3, 1, true, CycleMethod.NO_CYCLE, myStops));
         
-        // This is the keyword from the .css-StyleSheet.
-        myCircle.getStyleClass().add("templategauge");
+        // This is the keyword from the styleSheet 'StyleSheet.css' from package 'sentimeter.gaugebar'.
+        myCircle.getStyleClass().add("gauge");
         
         return myCircle;
     }
