@@ -22,11 +22,12 @@ public class GaugeBar extends Control {
     protected int currentValue = this.maxValue;
 
     public GaugeBar() {
-        setSkin(new GaugeBarSkin(this));
+        this.setSkin(new GaugeBarSkin(this));
     }
 
     // Setter
     public void setMaxValue(int newMaxValue) {
+        
         if (newMaxValue < this.currentValue) {
             System.out.println("Max value must be bigger than the current value!");
             throw new IllegalArgumentException("Max value must be bigger than the current value!");
@@ -40,6 +41,7 @@ public class GaugeBar extends Control {
     
     // Setter
     public void setValue(int newValue) {
+        
         if (this.maxValue < newValue && newValue < 0) {
             System.out.println("Value must be smaller than max value!");
             throw new IllegalArgumentException("Value must be smaller than max value!");
@@ -48,16 +50,17 @@ public class GaugeBar extends Control {
              // '.fireEvent' will notify all nodes in the hierarchy.
             this.fireEvent(new Event(newValue, this, EVENT_TYPE_CHANGE_VALUE));
         }
+        
     }
-
+    
     // Getter
     public int getMaxValue() {
         return this.maxValue;
     }
-
+    
     // Getter
     public int getValue() {
         return this.currentValue;
     }
-
+    
 }

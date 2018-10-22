@@ -32,15 +32,15 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
 
     public GaugeBarSkin(GaugeBar initialGaugeBar) {
         this.myGaugeBar = initialGaugeBar;
-        hookEventHandler();
+        this.hookEventHandler();
     }
 
     private void hookEventHandler() {
         this.myGaugeBar.addEventHandler(GaugeBar.EVENT_TYPE_CHANGE_VALUE, (Event event) -> {
-            redraw();
+            this.redraw();
         });
         this.myGaugeBar.addEventHandler(GaugeBar.EVENT_TYPE_CHANGE_MAX_VALUE, (Event event) -> {
-            redraw();
+            this.redraw();
         });
     }
 
@@ -53,7 +53,7 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
     public Node getNode() {
         if (this.rootGroupNode == null) {
             this.rootGroupNode = new Group();
-            redraw();
+            this.redraw();
         }
         return this.rootGroupNode;
     }
@@ -81,7 +81,7 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
         return new Circle(
                 this.mySize, 
                 this.mySize, 
-                RADIUS + 1
+                GaugeBarSkin.RADIUS + 1
         );
     }
 
@@ -91,14 +91,14 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
             new Stop(1, Color.ORANGERED)
         };
         Circle myCircle = new Circle(
-                this.mySize,    // CenterX
-                this.mySize,    // CenterY
-                RADIUS          // Radius
+                this.mySize,                // CenterX
+                this.mySize,                // CenterY
+                GaugeBarSkin.RADIUS         // Radius
         );
         myCircle.setFill(new LinearGradient(1, 0, 0.3, 1, true, CycleMethod.NO_CYCLE, myStops));
         
         // This is the keyword from the .css-StyleSheet.
-        myCircle.getStyleClass().add("gauge");
+        myCircle.getStyleClass().add("templategauge");
         
         return myCircle;
     }
@@ -113,8 +113,8 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
                     this.mySize,    // X-coordinate
                     this.mySize));  // Y-coordinate
             pathChildren.add(new LineTo(
-                    RADIUS * Math.cos(Math.toRadians(i)) + this.mySize,    // X-coordinate 
-                    RADIUS * Math.sin(Math.toRadians(i)) + this.mySize));  // Y-coordinate
+                    GaugeBarSkin.RADIUS * Math.cos(Math.toRadians(i)) + this.mySize,    // X-coordinate 
+                    GaugeBarSkin.RADIUS * Math.sin(Math.toRadians(i)) + this.mySize));  // Y-coordinate
         }
         
         return tickMarks;
@@ -142,9 +142,9 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
         arcBlend.setFill(Color.BLACK);
 
         Circle circleBlend = new Circle(
-                this.mySize,                            // Center-X
-                this.mySize + 3 * GAUGE_MAX_SIZE / 2,   // Center-Y
-                RADIUS - 4 * GAUGE_MAX_SIZE             // Radius
+                this.mySize,                                            // Center-X
+                this.mySize + 3 * GaugeBarSkin.GAUGE_MAX_SIZE / 2,      // Center-Y
+                GaugeBarSkin.RADIUS - 4 * GaugeBarSkin.GAUGE_MAX_SIZE   // Radius
         );
         circleBlend.setFill(Color.BLACK);
 
@@ -156,16 +156,16 @@ public class GaugeBarSkin implements Skin<GaugeBar> {
 
     private Node createBorder() {
         
-        Circle circle = new Circle(
-                this.mySize,    // Center-X
-                this.mySize,    // Center-Y
-                RADIUS          // Radius
+        Circle myCircle = new Circle(
+                this.mySize,            // Center-X
+                this.mySize,            // Center-Y
+                GaugeBarSkin.RADIUS     // Radius
         );
         
-        circle.setFill(null);
-        circle.setStroke(Color.WHITE);
+        myCircle.setFill(null);
+        myCircle.setStroke(Color.WHITE);
         
-        return circle;
+        return myCircle;
         
     }
 
