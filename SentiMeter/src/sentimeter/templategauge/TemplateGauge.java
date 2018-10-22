@@ -94,7 +94,7 @@ public class TemplateGauge extends Region {
     private DropShadow gaugeKnobDropShadow;
     private DropShadow pointerShadow;
     private DropShadow textDropShadow;
-    private final ObservableList<Section> sections;
+    private final ObservableList<Section> obsListSection;
     private Group sectionGroup;
     private ChangeListener<Number> sizeListener;
 
@@ -107,16 +107,21 @@ public class TemplateGauge extends Region {
         
         TemplateGauge.ASPECT_RATIO = 400 / 400;
         this.pane = new Pane();
+        // Symbol in the mid of the gauge.
         this.unitString = new SimpleStringProperty("%");
-        this.sections = FXCollections.observableArrayList();
+        // Initiate the obersever-list, that is a type of the class 'Section'.
+        this.obsListSection = FXCollections.observableArrayList();
+        // Define a bunch of values.
         this.value = new SimpleDoubleProperty(0);
         this.minValue = new SimpleDoubleProperty(0);
         this.maxValue = new SimpleDoubleProperty(100);
         this.minMeasuredValue = new SimpleDoubleProperty(100);
         this.maxMeasuredValue = new SimpleDoubleProperty(0);
+        // Threshold.
         this.threshold = new SimpleDoubleProperty(50);
         this.thresholdExceeded = new SimpleBooleanProperty(false);
         this.thresholdBehaviorInverted = new SimpleBooleanProperty(false);
+        // GUI stuff.
         this.angleStep = TemplateGauge.ANGLE_RANGE / (this.getMaxValue() - this.getMinValue());
         this.animated = new SimpleBooleanProperty(true);
         this.backgroundVisible = new SimpleBooleanProperty(true);
@@ -124,6 +129,8 @@ public class TemplateGauge extends Region {
         this.needleRotate = new Rotate(- TemplateGauge.ROTATION_OFFSET);
         this.tickLabels = new ArrayList<>();
         
+        // When a 'TemplateGauge' will be instanced, 
+        // then the following functions are executed.
         init();
         initGraphics();
         registerListeners();
@@ -195,7 +202,7 @@ public class TemplateGauge extends Region {
                 .build();
 
         this.tickLabelFont = Font.font("Verdana", FontWeight.BOLD, TemplateGauge.DEFAULT_WIDTH * 0.04);
-        for (double i = getMinValue(); Double.compare(i, getMaxValue()) <= 0; i += TemplateGauge.FRACTION) {
+        for (double i = this.getMinValue(); Double.compare(i, this.getMaxValue()) <= 0; i += TemplateGauge.FRACTION) {
             Text tickLabel = TextBuilder.create()
                     .font(this.tickLabelFont)
                     .text(String.format("%.0f", i))
@@ -290,7 +297,7 @@ public class TemplateGauge extends Region {
         this.resize();
         
     }
-
+    
     private void registerListeners() {
         
         this.widthProperty().addListener(this.sizeListener);
@@ -299,24 +306,24 @@ public class TemplateGauge extends Region {
         this.prefHeightProperty().addListener(this.sizeListener);
 
         this.backgroundVisible.addListener((Observable o) -> {
-            this.frame.setVisible(isBackgroundVisible());
-            this.background.setVisible(isBackgroundVisible());
+            this.frame.setVisible(this.isBackgroundVisible());
+            this.background.setVisible(this.isBackgroundVisible());
         });
 
         valueProperty().addListener((Observable observableObject) -> {
-            this.valueText.setText(String.format("%.2f", getValue()));
-            rotateNeedle();
-            if (getValue() < getMinMeasuredValue()) {
-                setMinMeasuredValue(getValue());
-            } else if (getValue() > getMaxMeasuredValue()) {
-                setMaxMeasuredValue(getValue());
+            this.valueText.setText(String.format("%.2f", this.getValue()));
+            this.rotateNeedle();
+            if (this.getValue() < this.getMinMeasuredValue()) {
+                this.setMinMeasuredValue(this.getValue());
+            } else if (this.getValue() > this.getMaxMeasuredValue()) {
+                this.setMaxMeasuredValue(this.getValue());
             }
-            if (isThresholdBehaviorInverted() && getValue() < getThreshold()) {
-                setThresholdExceeded(true);
-            } else if (!isThresholdBehaviorInverted() && getValue() > getThreshold()) {
-                setThresholdExceeded(true);
+            if (isThresholdBehaviorInverted() && this.getValue() < this.getThreshold()) {
+                this.setThresholdExceeded(true);
+            } else if (!isThresholdBehaviorInverted() && this.getValue() > this.getThreshold()) {
+                this.setThresholdExceeded(true);
             } else {
-                setThresholdExceeded(false);
+                this.setThresholdExceeded(false);
             }
         });
         
@@ -328,7 +335,7 @@ public class TemplateGauge extends Region {
     }
 
     public final void setValue(final double VALUE) {
-        this.value.set(clamp(getMinValue(), getMaxValue(), VALUE));
+        this.value.set(this.clamp(this.getMinValue(), this.getMaxValue(), VALUE));
     }
 
     public final DoubleProperty valueProperty() {
@@ -340,9 +347,9 @@ public class TemplateGauge extends Region {
     }
 
     public final void setMinValue(final double MIN_VALUE) {
-        this.minValue.set(clamp(Double.NEGATIVE_INFINITY, getMaxValue() - 1, MIN_VALUE));
-        recalculate();
-        updateTickLabels();
+        this.minValue.set(this.clamp(Double.NEGATIVE_INFINITY, this.getMaxValue() - 1, MIN_VALUE));
+        this.recalculate();
+        this.updateTickLabels();
     }
 
     public final DoubleProperty minValueProperty() {
@@ -354,9 +361,9 @@ public class TemplateGauge extends Region {
     }
 
     public final void setMaxValue(final double MAX_VALUE) {
-        this.maxValue.set(clamp(getMinValue() + 1, Double.POSITIVE_INFINITY, MAX_VALUE));
-        recalculate();
-        updateTickLabels();
+        this.maxValue.set(this.clamp(this.getMinValue() + 1, Double.POSITIVE_INFINITY, MAX_VALUE));
+        this.recalculate();
+        this.updateTickLabels();
     }
 
     public final DoubleProperty maxValueProperty() {
@@ -388,16 +395,16 @@ public class TemplateGauge extends Region {
     }
 
     public final void resetMinMeasuredValue() {
-        setMinMeasuredValue(getValue());
+        this.setMinMeasuredValue(this.getValue());
     }
 
     public final void resetMaxMeasuredValue() {
-        setMaxMeasuredValue(getValue());
+        this.setMaxMeasuredValue(this.getValue());
     }
 
     public final void resetMinMaxMeasuredValue() {
-        setMinMeasuredValue(getValue());
-        setMaxMeasuredValue(getValue());
+        this.setMinMeasuredValue(this.getValue());
+        this.setMaxMeasuredValue(this.getValue());
     }
 
     public final double getThreshold() {
@@ -473,24 +480,24 @@ public class TemplateGauge extends Region {
     }
 
     public final ObservableList<Section> getSections() {
-        return this.sections;
+        return this.obsListSection;
     }
 
     public final void setSections(final Section... SECTION_ARRAY) {
-        this.sections.setAll(SECTION_ARRAY);
-        addSections();
+        this.obsListSection.setAll(SECTION_ARRAY);
+        this.addSections();
     }
 
     public final void setSections(final List<Section> SECTIONS) {
-        this.sections.setAll(SECTIONS);
-        addSections();
+        this.obsListSection.setAll(SECTIONS);
+        this.addSections();
     }
 
     @Override
     protected double computePrefWidth(final double PREF_HEIGHT) {
         double prefHeight = TemplateGauge.DEFAULT_HEIGHT;
         if (PREF_HEIGHT != -1) {
-            prefHeight = Math.max(0, PREF_HEIGHT - getInsets().getTop() - getInsets().getBottom());
+            prefHeight = Math.max(0, PREF_HEIGHT - this.getInsets().getTop() - this.getInsets().getBottom());
         }
         return super.computePrefWidth(prefHeight);
     }
@@ -499,43 +506,44 @@ public class TemplateGauge extends Region {
     protected double computePrefHeight(final double PREF_WIDTH) {
         double prefWidth = DEFAULT_WIDTH;
         if (PREF_WIDTH != -1) {
-            prefWidth = Math.max(0, PREF_WIDTH - getInsets().getLeft() - getInsets().getRight());
+            prefWidth = Math.max(0, PREF_WIDTH - this.getInsets().getLeft() - this.getInsets().getRight());
         }
         return super.computePrefWidth(prefWidth);
     }
 
     @Override
     protected double computeMinWidth(final double MIN_HEIGHT) {
-        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, MIN_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMinWidth(Math.max(MINIMUM_HEIGHT, MIN_HEIGHT - this.getInsets().getTop() - this.getInsets().getBottom()));
     }
 
     @Override
     protected double computeMinHeight(final double MIN_WIDTH) {
-        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, MIN_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMinHeight(Math.max(MINIMUM_WIDTH, MIN_WIDTH - this.getInsets().getLeft() - this.getInsets().getRight()));
     }
 
     @Override
     protected double computeMaxWidth(final double MAX_HEIGHT) {
-        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, MAX_HEIGHT - getInsets().getTop() - getInsets().getBottom()));
+        return super.computeMaxWidth(Math.min(MAXIMUM_HEIGHT, MAX_HEIGHT - this.getInsets().getTop() - this.getInsets().getBottom()));
     }
 
     @Override
     protected double computeMaxHeight(final double MAX_WIDTH) {
-        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, MAX_WIDTH - getInsets().getLeft() - getInsets().getRight()));
+        return super.computeMaxHeight(Math.min(MAXIMUM_WIDTH, MAX_WIDTH - this.getInsets().getLeft() - this.getInsets().getRight()));
     }
 
-    // ******************** Private methods ***********************************
+    // Private methods
     private void rotateNeedle() {
+        
         this.valueText.setX((this.width - this.valueText.getLayoutBounds().getWidth()) * 0.5);
         this.valueText.setY(this.size * 0.85);
 
-        double targetAngle = (getValue() - getMinValue()) * this.angleStep - ROTATION_OFFSET;
-        if (isAnimated()) {
+        double targetAngle = (this.getValue() - this.getMinValue()) * this.angleStep - TemplateGauge.ROTATION_OFFSET;
+        if (this.isAnimated()) {
             this.needle.setCache(true);
             this.needle.setCacheHint(CacheHint.ROTATE);
             this.timeline.stop();
-            final KeyValue KEY_VALUE = new KeyValue(needleRotate.angleProperty(), targetAngle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
-            final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(TIME_TO_VALUE), KEY_VALUE);
+            final KeyValue KEY_VALUE = new KeyValue(this.needleRotate.angleProperty(), targetAngle, Interpolator.SPLINE(0.5, 0.4, 0.4, 1.0));
+            final KeyFrame KEY_FRAME = new KeyFrame(Duration.millis(TemplateGauge.TIME_TO_VALUE), KEY_VALUE);
             this.timeline.getKeyFrames().setAll(KEY_FRAME);
             this.timeline.getKeyFrames().add(KEY_FRAME);
             this.timeline.play();
@@ -545,11 +553,12 @@ public class TemplateGauge extends Region {
         } else {
             this.needleRotate.setAngle(targetAngle);
         }
+        
     }
 
     private void recalculate() {
-        this.angleStep = ANGLE_RANGE / (getMaxValue() - getMinValue());
-        setThreshold(clamp(getMinValue(), getMaxValue(), getThreshold()));
+        this.angleStep = TemplateGauge.ANGLE_RANGE / (this.getMaxValue() - this.getMinValue());
+        this.setThreshold(this.clamp(this.getMinValue(), this.getMaxValue(), this.getThreshold()));
     }
 
     private void addSections() {
@@ -561,14 +570,15 @@ public class TemplateGauge extends Region {
     }
 
     private void updateSections() {
+        
         final double OUTER_RADIUS = this.size * 0.41;
         final double CENTER_X = this.width * 0.5;
         final double CENTER_Y = this.height * 0.5;
 
-        getSections().stream().map((section) -> {
-            final double SECTION_START = clamp(getMinValue(), getMaxValue(), section.getStart());
-            final double SECTION_STOP = clamp(getMinValue(), getMaxValue(), section.getStop());
-            final double ANGLE_START = ROTATION_OFFSET - (SECTION_START * this.angleStep) + (getMinValue() * this.angleStep) + 90;
+        this.getSections().stream().map((section) -> {
+            final double SECTION_START = this.clamp(this.getMinValue(), this.getMaxValue(), section.getStart());
+            final double SECTION_STOP = this.clamp(this.getMinValue(), this.getMaxValue(), section.getStop());
+            final double ANGLE_START = TemplateGauge.ROTATION_OFFSET - (SECTION_START * this.angleStep) + (this.getMinValue() * this.angleStep) + 90;
             final double ANGLE_EXTEND = -(SECTION_STOP - SECTION_START) * this.angleStep;
             section.getArea().setType(ArcType.ROUND);
             section.getArea().setCenterX(CENTER_X);
@@ -581,12 +591,15 @@ public class TemplateGauge extends Region {
         }).forEachOrdered((section) -> {
             section.getArea().setFill(section.getColor());
         });
+        
     }
 
     private void updateTickLabels() {
+        
         this.tickLabelGroup.getChildren().clear();
         this.tickLabels.clear();
-        for (double i = getMinValue(); Double.compare(i, getMaxValue()) <= 0; i += TemplateGauge.FRACTION) {
+        
+        for (double i = this.getMinValue(); Double.compare(i, this.getMaxValue()) <= 0; i += TemplateGauge.FRACTION) {
             Text tickLabel = TextBuilder.create()
                     .font(this.tickLabelFont)
                     .text(String.format("%.0f", i))
@@ -595,8 +608,10 @@ public class TemplateGauge extends Region {
                     .build();
             this.tickLabels.add(tickLabel);
         }
+        
         this.tickLabelGroup.getChildren().setAll(this.tickLabels);
-        resize();
+        this.resize();
+        
     }
 
     private double clamp(final double MIN, final double MAX, final double VALUE) {
@@ -610,47 +625,50 @@ public class TemplateGauge extends Region {
     }
 
     public final void drawAlertIndicator(final double WIDTH, final double HEIGHT, final Color COLOR) {
+        
         this.alertIndicator.setWidth(WIDTH);
         this.alertIndicator.setHeight(HEIGHT);
-        final GraphicsContext CTX = this.alertIndicator.getGraphicsContext2D();
-        CTX.clearRect(0, 0, WIDTH, HEIGHT);
+        final GraphicsContext GCTX = this.alertIndicator.getGraphicsContext2D();
+        GCTX.clearRect(0, 0, WIDTH, HEIGHT);
 
-        //alert
-        CTX.save();
-        CTX.beginPath();
-        CTX.moveTo(0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT);
-        CTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.7777777777777778 * HEIGHT, 0.4838709677419355 * WIDTH, 0.7407407407407407 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7407407407407407 * HEIGHT);
-        CTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.7407407407407407 * HEIGHT, 0.5483870967741935 * WIDTH, 0.7777777777777778 * HEIGHT, 0.5483870967741935 * WIDTH, 0.8148148148148148 * HEIGHT);
-        CTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.8148148148148148 * HEIGHT, 0.5161290322580645 * WIDTH, 0.8518518518518519 * HEIGHT, 0.5161290322580645 * WIDTH, 0.8518518518518519 * HEIGHT);
-        CTX.bezierCurveTo(0.4838709677419355 * WIDTH, 0.8518518518518519 * HEIGHT, 0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT, 0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT);
-        CTX.closePath();
-        CTX.moveTo(0.45161290322580644 * WIDTH, 0.37037037037037035 * HEIGHT);
-        CTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT, 0.4838709677419355 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5161290322580645 * WIDTH, 0.3333333333333333 * HEIGHT);
-        CTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5483870967741935 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5483870967741935 * WIDTH, 0.37037037037037035 * HEIGHT);
-        CTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.37037037037037035 * HEIGHT, 0.5483870967741935 * WIDTH, 0.6296296296296297 * HEIGHT, 0.5483870967741935 * WIDTH, 0.6296296296296297 * HEIGHT);
-        CTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT);
-        CTX.bezierCurveTo(0.4838709677419355 * WIDTH, 0.7037037037037037 * HEIGHT, 0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT, 0.45161290322580644 * WIDTH, 0.6296296296296297 * HEIGHT);
-        CTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.6296296296296297 * HEIGHT, 0.45161290322580644 * WIDTH, 0.37037037037037035 * HEIGHT, 0.45161290322580644 * WIDTH, 0.37037037037037035 * HEIGHT);
-        CTX.closePath();
-        CTX.moveTo(0.3225806451612903 * WIDTH, 0.9629629629629629 * HEIGHT);
-        CTX.lineTo(0.6451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT);
-        CTX.bezierCurveTo(0.6451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT, 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT, 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT);
-        CTX.bezierCurveTo(0.9354838709677419 * WIDTH, 0.9629629629629629 * HEIGHT, 0.967741935483871 * WIDTH, 0.8888888888888888 * HEIGHT, 0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT);
-        CTX.bezierCurveTo(0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT, 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT, 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT);
-        CTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.037037037037037035 * HEIGHT, 0.45161290322580644 * WIDTH, 0.037037037037037035 * HEIGHT, 0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT);
-        CTX.bezierCurveTo(0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT, 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT, 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT);
-        CTX.bezierCurveTo(0.03225806451612903 * WIDTH, 0.8888888888888888 * HEIGHT, 0.06451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT, 0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT);
-        CTX.bezierCurveTo(0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT, 0.3225806451612903 * WIDTH, 0.9629629629629629 * HEIGHT, 0.3225806451612903 * WIDTH, 0.9629629629629629 * HEIGHT);
-        CTX.closePath();
-        CTX.setFill(COLOR);
-        CTX.fill();
-        CTX.restore();
+        // Alert.
+        GCTX.save();
+        GCTX.beginPath();
+        GCTX.moveTo(0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT);
+        GCTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.7777777777777778 * HEIGHT, 0.4838709677419355 * WIDTH, 0.7407407407407407 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7407407407407407 * HEIGHT);
+        GCTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.7407407407407407 * HEIGHT, 0.5483870967741935 * WIDTH, 0.7777777777777778 * HEIGHT, 0.5483870967741935 * WIDTH, 0.8148148148148148 * HEIGHT);
+        GCTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.8148148148148148 * HEIGHT, 0.5161290322580645 * WIDTH, 0.8518518518518519 * HEIGHT, 0.5161290322580645 * WIDTH, 0.8518518518518519 * HEIGHT);
+        GCTX.bezierCurveTo(0.4838709677419355 * WIDTH, 0.8518518518518519 * HEIGHT, 0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT, 0.45161290322580644 * WIDTH, 0.8148148148148148 * HEIGHT);
+        GCTX.closePath();
+        GCTX.moveTo(0.45161290322580644 * WIDTH, 0.37037037037037035 * HEIGHT);
+        GCTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.3333333333333333 * HEIGHT, 0.4838709677419355 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5161290322580645 * WIDTH, 0.3333333333333333 * HEIGHT);
+        GCTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5483870967741935 * WIDTH, 0.3333333333333333 * HEIGHT, 0.5483870967741935 * WIDTH, 0.37037037037037035 * HEIGHT);
+        GCTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.37037037037037035 * HEIGHT, 0.5483870967741935 * WIDTH, 0.6296296296296297 * HEIGHT, 0.5483870967741935 * WIDTH, 0.6296296296296297 * HEIGHT);
+        GCTX.bezierCurveTo(0.5483870967741935 * WIDTH, 0.6666666666666666 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT, 0.5161290322580645 * WIDTH, 0.7037037037037037 * HEIGHT);
+        GCTX.bezierCurveTo(0.4838709677419355 * WIDTH, 0.7037037037037037 * HEIGHT, 0.45161290322580644 * WIDTH, 0.6666666666666666 * HEIGHT, 0.45161290322580644 * WIDTH, 0.6296296296296297 * HEIGHT);
+        GCTX.bezierCurveTo(0.45161290322580644 * WIDTH, 0.6296296296296297 * HEIGHT, 0.45161290322580644 * WIDTH, 0.37037037037037035 * HEIGHT, 0.45161290322580644 * WIDTH, 0.37037037037037035 * HEIGHT);
+        GCTX.closePath();
+        GCTX.moveTo(0.3225806451612903 * WIDTH, 0.9629629629629629 * HEIGHT);
+        GCTX.lineTo(0.6451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT);
+        GCTX.bezierCurveTo(0.6451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT, 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT, 0.8387096774193549 * WIDTH, 0.9629629629629629 * HEIGHT);
+        GCTX.bezierCurveTo(0.9354838709677419 * WIDTH, 0.9629629629629629 * HEIGHT, 0.967741935483871 * WIDTH, 0.8888888888888888 * HEIGHT, 0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT);
+        GCTX.bezierCurveTo(0.9032258064516129 * WIDTH, 0.8148148148148148 * HEIGHT, 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT, 0.5806451612903226 * WIDTH, 0.1111111111111111 * HEIGHT);
+        GCTX.bezierCurveTo(0.5161290322580645 * WIDTH, 0.037037037037037035 * HEIGHT, 0.45161290322580644 * WIDTH, 0.037037037037037035 * HEIGHT, 0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT);
+        GCTX.bezierCurveTo(0.41935483870967744 * WIDTH, 0.1111111111111111 * HEIGHT, 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT, 0.06451612903225806 * WIDTH, 0.8148148148148148 * HEIGHT);
+        GCTX.bezierCurveTo(0.03225806451612903 * WIDTH, 0.8888888888888888 * HEIGHT, 0.06451612903225806 * WIDTH, 0.9629629629629629 * HEIGHT, 0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT);
+        GCTX.bezierCurveTo(0.16129032258064516 * WIDTH, 0.9629629629629629 * HEIGHT, 0.3225806451612903 * WIDTH, 0.9629629629629629 * HEIGHT, 0.3225806451612903 * WIDTH, 0.9629629629629629 * HEIGHT);
+        GCTX.closePath();
+        GCTX.setFill(COLOR);
+        GCTX.fill();
+        GCTX.restore();
+        
     }
 
     private void resize() {
-        this.size = getWidth() < getHeight() ? getWidth() : getHeight();
-        this.width = getWidth();
-        this.height = getHeight();
+        
+        this.size = this.getWidth() < this.getHeight() ? this.getWidth() : this.getHeight();
+        this.width = this.getWidth();
+        this.height = this.getHeight();
 
         if (TemplateGauge.ASPECT_RATIO * this.width > this.height) {
             this.width = 1 / (TemplateGauge.ASPECT_RATIO / this.height);
@@ -676,11 +694,11 @@ public class TemplateGauge extends Region {
         for (double angle = -30; Double.compare(angle, -ANGLE_RANGE - 30) >= 0; angle -= (FRACTION * this.angleStep)) {
             double x = 0.31 * this.size * Math.sin(Math.toRadians(angle));
             double y = 0.31 * this.size * Math.cos(Math.toRadians(angle));
-            tickLabels.get(tickLabelCounter).setFont(this.tickLabelFont);
-            tickLabels.get(tickLabelCounter).setX(this.size * 0.5 + x - this.tickLabels.get(tickLabelCounter).getLayoutBounds().getWidth() * 0.5);
-            tickLabels.get(tickLabelCounter).setY(this.size * 0.5 + y);
-            tickLabels.get(tickLabelCounter).setTextOrigin(VPos.CENTER);
-            tickLabels.get(tickLabelCounter).setTextAlignment(TextAlignment.CENTER);
+            this.tickLabels.get(tickLabelCounter).setFont(this.tickLabelFont);
+            this.tickLabels.get(tickLabelCounter).setX(this.size * 0.5 + x - this.tickLabels.get(tickLabelCounter).getLayoutBounds().getWidth() * 0.5);
+            this.tickLabels.get(tickLabelCounter).setY(this.size * 0.5 + y);
+            this.tickLabels.get(tickLabelCounter).setTextOrigin(VPos.CENTER);
+            this.tickLabels.get(tickLabelCounter).setTextAlignment(TextAlignment.CENTER);
             tickLabelCounter++;
         }
 
@@ -711,7 +729,7 @@ public class TemplateGauge extends Region {
         this.valueText.setX((this.width - this.valueText.getLayoutBounds().getWidth()) * 0.5);
         this.valueText.setY(this.size * 0.85);
 
-        drawAlertIndicator(0.124 * this.size, 0.108 * this.size, Color.RED);
+        this.drawAlertIndicator(0.124 * this.size, 0.108 * this.size, Color.RED);
         this.alertIndicator.setTranslateX((this.width - this.alertIndicator.getLayoutBounds().getWidth()) * 0.5);
         this.alertIndicator.setTranslateY(this.height * 0.68);
 

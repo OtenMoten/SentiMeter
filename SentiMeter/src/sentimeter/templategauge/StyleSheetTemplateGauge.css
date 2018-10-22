@@ -1,3 +1,11 @@
+/* The shape string is an SVG Path (http://www.w3.org/TR/SVG/paths.html).
+Note the shape string for a region is the shape of the region, not a shape in a region. 
+If you want to create shapes based on paths to put in a region, then use an SVGPath and not a Region.
+You can use an SVG editor to create SVG paths.
+Recommending particular SVG editors is off topic for StackOverflow, 
+try Google and you may find Inkscape (http://www.inkscape.org/en/) (and it's option Path | Object to Path).
+*/
+
 .templategauge {
     -needle-color       : rgb(221, 221, 221);
     -frame-color        : rgb(31, 34, 35);
