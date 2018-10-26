@@ -312,11 +312,9 @@ public class FXMLDocumentController implements Initializable {
             // Bar-chart
             // Marks
             XYChart.Series iBarChartExclamationMarks = new XYChart.Series();
-            iBarChartExclamationMarks.getData().add(new XYChart.Data("", this.iExclamationmarkCounter * 10));
+            iBarChartExclamationMarks.getData().add(new XYChart.Data("", this.iExclamationmarkCounter));
             XYChart.Series iBarChartQuestionMarks = new XYChart.Series();
-            iBarChartQuestionMarks.getData().add(new XYChart.Data("", this.iQuestionsmarkCounter * 10));
-
-            XYChart.Series Placeholder = new XYChart.Series();
+            iBarChartQuestionMarks.getData().add(new XYChart.Data("", this.iQuestionsmarkCounter));
 
             this.iBarChart.getData().removeAll();
             this.iBarChart.getData().clear();
