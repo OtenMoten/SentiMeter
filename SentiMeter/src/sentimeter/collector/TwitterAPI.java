@@ -1,127 +1,273 @@
 package sentimeter.collector;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.DoubleProperty;
 import javafx.scene.control.TextArea;
 import twitter4j.Paging;
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
-public class TwitterAPI {
+public class TwitterAPI extends AbstractAPI {
 
-    final String consumerKey;
-    final String consumerSecret;
-    final String twitterToken;
-    final String twitterSecret;
+    // Creating a constant.
+    final int MAX_PAGES = 10;
+    final int COUNT_OF_TWEETS = 1000;
 
-    static int iStaticCount = 0;
-    static boolean hasDataTrigger = false;
+    // Set up initial configuration.
+    Twitter myTwitter = new TwitterFactory().getInstance();
 
-    static float myGlobalCounter = 0.0F;
+    // Define list to save the status-text of the tweets.
+    List<String> iStatusTextList = new ArrayList<>();
 
-    List<Status> iStatusList;
-    List<String> iTextList;
+    // Define a crypto-relevant set of words.
+    List<String> iCryptoWords = new ArrayList<>(Arrays.asList(
+            "Bitcoin",
+            "BTC",
+            "XBT",
+            "Crypto",
+            "Cryptocurrency",
+            "Cryptocurrencies"
+    ));
 
-    public TwitterAPI(String initialConsumerKey, String initialConsumerSecret, String initialTwitterToken, String initialTwitterSecret) {
-        this.consumerKey = initialConsumerKey;
-        this.consumerSecret = initialConsumerSecret;
-        this.twitterToken = initialTwitterToken;
-        this.twitterSecret = initialTwitterSecret;
+    // Create a random-generator.
+    Random iRandomGenerator = new Random();
+
+    // Constructor
+    public TwitterAPI(String inputUserKey, String inputUserSecret, String inputTokenKey, String inputTokenSecret) {
+        // Set user's parameters.
+        this.setUserKey(inputUserKey);
+        this.setUserSecret(inputUserSecret);
+        // Set service's parameters.
+        this.setTokenKey(inputTokenKey);
+        this.setTokenSecret(inputTokenSecret);
     }
 
-    public boolean isRunning() {
-        if (hasDataTrigger = true) {
-            return true;
+    @Override
+    public void buildConnection() {
+
+        if (this.myTwitter.getAuthorization().isEnabled() == false) {
+            // Set up login credentials.
+            this.myTwitter.setOAuthConsumer(this.getUserKey(), this.getUserSecret());
+            this.myTwitter.setOAuthAccessToken(new AccessToken(this.getTokenKey(), this.getTokenSecret()));
         } else {
-            return false;
+
         }
+
     }
 
-    public void printCurrentTweets() {
-        this.iTextList.forEach((listElement) -> {
-            System.out.println(listElement);
-        });
-    }
+    // Download the tweets per day.
+    @Override
+    public void downloadTweetsOfTheDay(String iTarget) {
 
-    public void setNewsBars(TextArea alpha, TextArea beta, TextArea gamma) {
-        Random myRandom = new Random();
-        alpha.setText(this.iTextList.get(myRandom.nextInt(this.iTextList.size())));
-        beta.setText(this.iTextList.get(myRandom.nextInt(this.iTextList.size())));
-        gamma.setText(this.iTextList.get(myRandom.nextInt(this.iTextList.size())));
-    }
+        // Create Calendar-objects and get the instance.
+        Calendar iCurrentDate = Calendar.getInstance();
+        Calendar iStatusDate = Calendar.getInstance();
 
-    public List<String> getTweetsMonth(String iTarget, int iCount) {
+        // Reset the statuses-list.
+        this.iStatusTextList = new ArrayList<>();
 
-        // Set up initial configuration.
-        TwitterFactory myFactory = new TwitterFactory();
-        Twitter myTwitter = myFactory.getInstance();
-        // Set up login credentials.
-        myTwitter.setOAuthConsumer(this.consumerKey, this.consumerSecret);
-        myTwitter.setOAuthAccessToken(new AccessToken(this.twitterToken, this.twitterSecret));
-        // Initialize the text-list.
-        this.iTextList = new ArrayList<>();
+        this.buildConnection();
 
-        List<Status> tempStatusList = new ArrayList<>();
+        // Page-index must start at '1', not '0' as usual.
+        for (int iPageIndex = 1; iPageIndex <= this.MAX_PAGES; iPageIndex++) {
 
-        Calendar iDate = Calendar.getInstance();
-
-        for (int i = 1; i < 11; i++) {
             try {
-                // Attack the target.
-                this.iStatusList = myTwitter.getUserTimeline(iTarget, new Paging(i, iCount));
 
-                System.out.println("Check the #" + i + " page");
-                // Convert the status-lines in Strings and
-                // them to the text-list as String.
-                if (this.iStatusList.size() < Integer.MAX_VALUE) {
-                    this.iStatusList.forEach((statusElement) -> {
-                        // '.getTxt()' extracts the tweet's status-text from
-                        // the status-object. Then, they are added to the text-list.
-                        // Additionally, remove the 'RT ' (re-tweet) tag.
-                        // System.out.println(statusElement);
+                // Convert the status-lines in Strings and then add them to the text-list as String.
+                this.myTwitter.getUserTimeline(iTarget, new Paging(iPageIndex, this.COUNT_OF_TWEETS)).forEach((statusElement) -> {
+
+                    // Transform the date of the actucal status-element to the a 'Calendar'-object.
+                    iStatusDate.setTime(statusElement.getCreatedAt());
+
+                    this.iCryptoWords.forEach((cryptoWord) -> {
+
+                        // '.getTxt()' extracts the tweet's status-text from each 'statusElement'. 
+                        // Then, each 'statusElement' is added to the String-List.
                         // Filter out the crypto relevant stuff.
-                        if ((statusElement.getText().contains("Bitcoin")
-                                || statusElement.getText().contains("BTC")
-                                || statusElement.getText().contains("XBT")
-                                || statusElement.getText().contains("Crypto")
-                                || statusElement.getText().contains("Cryptocurrency")
-                                || statusElement.getText().contains("Cryptocurrencies"))
-                                && statusElement.getCreatedAt().getMonth() + 1 == iDate.getTime().getMonth() + 1) {
-                            tempStatusList.add(statusElement);
-                            this.iTextList.add(statusElement.getText());
+                        if ((statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord))
+                                // Filter out the actual month.
+                                && iStatusDate.get(Calendar.DAY_OF_YEAR) == iCurrentDate.get(Calendar.DAY_OF_YEAR)) {
+                            // Extract the status-text of the tweet and add it to the String-List 'iStatusTextList'.
+                            this.iStatusTextList.add(statusElement.getText());
                         } else {
-                            //
+                            // DO NOTHING
                         }
-                        if (this.iTextList.size() < 1) {
-                            this.iTextList.add("Nothing to see here.");
-                        }
+
                     });
-                }
-                TwitterAPI.hasDataTrigger = true;
-            } catch (TwitterException twitterExc) {
-                Logger.getLogger(TwitterAPI.class.getName()).log(Level.SEVERE, null, twitterExc);
-                System.err.println("$ twitterExc: " + twitterExc.getErrorMessage());
+
+                });
+
+            } catch (TwitterException twitterException) {
+                Logger.getLogger(TwitterAPI.class.getName()).log(Level.SEVERE, null, twitterException);
+                System.err.println("> > > TwitterException is '" + twitterException.getErrorMessage() + "'.");
             }
 
         }
 
-        for (int i = 0; i < iTextList.size(); i++) {
-            System.out.println(iTextList.get(i));
+    }
+
+    // Download the tweets per day.
+    @Override
+    public void downloadTweetsOfThisWeek(String iTarget) {
+
+        // Create Calendar-objects and get the instance.
+        Calendar iCurrentDate = Calendar.getInstance();
+        Calendar iStatusDate = Calendar.getInstance();
+
+        // Reset the statuses-list.
+        this.iStatusTextList = new ArrayList<>();
+
+        this.buildConnection();
+
+        // Page-index must start at '1', not '0' as usual.
+        for (int iPageIndex = 1; iPageIndex <= this.MAX_PAGES; iPageIndex++) {
+
+            try {
+
+                // Convert the status-lines in Strings and then add them to the text-list as String.
+                this.myTwitter.getUserTimeline(iTarget, new Paging(iPageIndex, this.COUNT_OF_TWEETS)).forEach((statusElement) -> {
+
+                    // Transform the date of the actucal status-element to the a 'Calendar'-object.
+                    iStatusDate.setTime(statusElement.getCreatedAt());
+
+                    this.iCryptoWords.forEach((cryptoWord) -> {
+
+                        // '.getTxt()' extracts the tweet's status-text from each 'statusElement'. 
+                        // Then, each 'statusElement' is added to the String-List.
+                        // Filter out the crypto relevant stuff.
+                        if ((statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord))
+                                // Filter out the actual month.
+                                && iStatusDate.get(Calendar.WEEK_OF_YEAR) == iCurrentDate.get(Calendar.WEEK_OF_YEAR)) {
+                            // Extract the status-text of the tweet and add it to the String-List 'iStatusTextList'.
+                            this.iStatusTextList.add(statusElement.getText());
+                        } else {
+                            // DO NOTHING
+                        }
+
+                    });
+
+                });
+
+            } catch (TwitterException twitterException) {
+                Logger.getLogger(TwitterAPI.class.getName()).log(Level.SEVERE, null, twitterException);
+                System.err.println("> > > TwitterException is '" + twitterException.getErrorMessage() + "'.");
+            }
+
         }
 
-        for (int i = 0; i < tempStatusList.size(); i++) {
-            System.out.println(tempStatusList.get(i));
+    }
+
+    // Download the tweets per day.
+    @Override
+    public void downloadTweetsOfThisMonth(String iTarget) {
+
+        // Create Calendar-objects and get the instance.
+        Calendar iCurrentDate = Calendar.getInstance();
+        iCurrentDate.add(Calendar.MONTH, 1);
+        Calendar iStatusDate = Calendar.getInstance();
+
+        // Reset the statuses-list.
+        this.iStatusTextList = new ArrayList<>();
+
+        this.buildConnection();
+
+        // Page-index must start at '1', not '0' as usual.
+        for (int iPageIndex = 1; iPageIndex <= this.MAX_PAGES; iPageIndex++) {
+
+            try {
+
+                // Convert the status-lines in Strings and then add them to the text-list as String.
+                this.myTwitter.getUserTimeline(iTarget, new Paging(iPageIndex, this.COUNT_OF_TWEETS)).forEach((statusElement) -> {
+
+                    // Transform the date of the actucal status-element to the a 'Calendar'-object.
+                    iStatusDate.setTime(statusElement.getCreatedAt());
+                    iStatusDate.add(Calendar.MONTH, 1);
+
+                    this.iCryptoWords.forEach((cryptoWord) -> {
+
+                        // '.getTxt()' extracts the tweet's status-text from each 'statusElement'. 
+                        // Then, each 'statusElement' is added to the String-List.
+                        // Filter out the crypto relevant stuff.
+                        if ((statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord)
+                                || statusElement.getText().contains(cryptoWord))
+                                // Filter out the actual month.
+                                && iStatusDate.get(Calendar.MONTH) == iCurrentDate.get(Calendar.MONTH)) {
+                            // Extract the status-text of the tweet and add it to the String-List 'iStatusTextList'.
+                            this.iStatusTextList.add(statusElement.getText());
+                        } else {
+                            // DO NOTHING
+                        }
+
+                    });
+
+                });
+
+            } catch (TwitterException twitterException) {
+                Logger.getLogger(TwitterAPI.class.getName()).log(Level.SEVERE, null, twitterException);
+                System.err.println("> > > TwitterException is '" + twitterException.getErrorMessage() + "'.");
+            }
+
         }
 
-        return this.iTextList;
+    }
+
+    // Get the tweets per day.
+    @Override
+    public List<String> getTweetsOfTheDay(String inputTarget) {
+        this.iStatusTextList = new ArrayList<>();
+        this.downloadTweetsOfTheDay(inputTarget);
+
+        return this.iStatusTextList;
+    }
+
+    // Get the tweets per week.
+    @Override
+    public List<String> getTweetsOfThisWeek(String inputTarget) {
+        this.iStatusTextList = new ArrayList<>();
+        this.downloadTweetsOfThisWeek(inputTarget);
+
+        return this.iStatusTextList;
+    }
+
+    // Get the tweets per month.
+    @Override
+    public List<String> getTweetsOfThisMonth(String inputTarget) {
+        this.iStatusTextList = new ArrayList<>();
+        this.downloadTweetsOfThisMonth(inputTarget);
+
+        return this.iStatusTextList;
+    }
+
+    public void setTextArea(TextArea inputTextArea) {
+
+        this.iRandomGenerator = new Random();
+
+        if (this.iStatusTextList.isEmpty()) {
+            this.iStatusTextList.add("Nothing.");
+        }
+
+        inputTextArea.setText(this.iStatusTextList.get(this.iRandomGenerator.nextInt(this.iStatusTextList.size())));
 
     }
 
