@@ -43,7 +43,7 @@ import javafx.util.Duration;
 
 /**
  *
- * @author Gerrit Grunwald <han.solo.gg@gmail.com>
+ * @author Gerrit Grunwald han.solo.gg@gmail.com
  */
 public class TemplateGauge extends Region {
 
