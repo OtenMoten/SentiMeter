@@ -107,12 +107,12 @@ public class FXMLDocumentController implements Initializable {
 
     // Define a bu,llish-relevant set of words.
     List<String> iBullishWords = new ArrayList<>(Arrays.asList(
-            "Bull", "Bullish", "Sell", "Win"
+            "Bull", "Bullish", "Buy", "Win"
     ));
 
     // Define a bu,llish-relevant set of words.
     List<String> iBearishWords = new ArrayList<>(Arrays.asList(
-            "Bear", "Bearish", "Buy", "Loss"
+            "Bear", "Bearish", "Sell", "Loss"
     ));
 
     public Group createGaugeGroup() {
