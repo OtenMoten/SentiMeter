@@ -121,7 +121,7 @@
                                         <NumberAxis autoRanging="false" side="BOTTOM" tickLabelsVisible="false" />
                                     </xAxis>
                                     <yAxis>
-                                        <NumberAxis autoRanging="false" side="LEFT" tickLabelsVisible="false" />
+                                        <NumberAxis side="LEFT" tickLabelsVisible="false" />
                                     </yAxis>
                                 </StackedAreaChart>
                             </items>
