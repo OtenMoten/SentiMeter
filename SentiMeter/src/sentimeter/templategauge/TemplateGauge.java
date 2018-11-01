@@ -47,8 +47,8 @@ import javafx.util.Duration;
  */
 public class TemplateGauge extends Region {
 
-    private static final double DEFAULT_WIDTH = 300;
-    private static final double DEFAULT_HEIGHT = 300;
+    private static final double DEFAULT_WIDTH = 400;
+    private static final double DEFAULT_HEIGHT = 400;
     private static final double MINIMUM_WIDTH = 5;
     private static final double MINIMUM_HEIGHT = 5;
     private static final double MAXIMUM_WIDTH = 1024;

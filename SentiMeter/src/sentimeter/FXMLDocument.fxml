@@ -2,150 +2,179 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.SubScene?>
-<?import javafx.scene.chart.BarChart?>
-<?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.chart.StackedAreaChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" maxHeight="1080.0" maxWidth="1920.0" minHeight="655.0" minWidth="798.0" prefHeight="655.0" prefWidth="798.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sentimeter.FXMLDocumentController">
+<AnchorPane id="AnchorPane" maxHeight="800.0" maxWidth="1300.0" minHeight="600.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sentimeter.FXMLDocumentController">
    <children>
-      <Pane minHeight="665.0" minWidth="807.0" prefHeight="665.0" prefWidth="785.0">
-         <children>
-            <VBox alignment="CENTER" maxHeight="1080.0" maxWidth="1920.0" minHeight="665.0" minWidth="807.0" prefHeight="665.0" prefWidth="629.0">
+      <BorderPane maxHeight="800.0" maxWidth="1300.0" minHeight="600.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1300.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <top>
+            <MenuBar maxHeight="1080.0" maxWidth="1920.0" minHeight="28.0" minWidth="807.0" prefHeight="28.0" prefWidth="922.0" BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
+         <center>
+            <SubScene fx:id="subScene" height="622.0" width="680.0" BorderPane.alignment="TOP_LEFT">
+              <root>
+                <Region />
+              </root>
+            </SubScene>
+         </center>
+         <bottom>
+            <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="119.0" minWidth="505.0" prefHeight="148.0" prefWidth="505.0" BorderPane.alignment="TOP_LEFT">
                <children>
-                  <MenuBar maxHeight="1080.0" maxWidth="1920.0" minHeight="30.0" minWidth="807.0" prefHeight="30.0" prefWidth="807.0">
-                    <menus>
-                      <Menu mnemonicParsing="false" text="File">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="Close" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Edit">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="Delete" />
-                        </items>
-                      </Menu>
-                      <Menu mnemonicParsing="false" text="Help">
-                        <items>
-                          <MenuItem mnemonicParsing="false" text="About" />
-                        </items>
-                      </Menu>
-                    </menus>
-                  </MenuBar>
-                  <FlowPane maxHeight="1.7976931348623157E308" maxWidth="1920.0" minHeight="634.0" minWidth="689.0" prefHeight="635.0" prefWidth="689.0">
+                  <VBox alignment="CENTER" prefHeight="148.0" prefWidth="286.0">
                      <children>
-                        <SplitPane dividerPositions="0.7861952861952862" maxHeight="1080.0" maxWidth="1920.0" minHeight="600.0" minWidth="643.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="643.0">
-                          <items>
-                              <SubScene fx:id="subScene" height="470.0" width="600.0">
-                                <root>
-                                  <Region />
-                                </root>
-                              </SubScene>
-                            <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="100.0" minWidth="160.0" prefHeight="100.0" prefWidth="641.0">
-                                 <children>
-                                    <HBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="119.0" minWidth="636.0" prefHeight="119.0" prefWidth="636.0">
-                                       <children>
-                                          <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="119.0" minWidth="220.0" prefHeight="119.0" prefWidth="280.0">
-                                             <children>
-                                                <ComboBox fx:id="mySourceBox" minHeight="24.0" minWidth="200.0" prefHeight="24.0" prefWidth="200.0" promptText="Select source ...">
-                                                   <VBox.margin>
-                                                      <Insets top="15.0" />
-                                                   </VBox.margin>
-                                                </ComboBox>
-                                                <ToggleButton minHeight="25.0" minWidth="200.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="200.0" text="Invert">
-                                                   <VBox.margin>
-                                                      <Insets top="15.0" />
-                                                   </VBox.margin>
-                                                </ToggleButton>
-                                             </children>
-                                          </VBox>
-                                          <VBox alignment="CENTER" minHeight="119.0" minWidth="103.0" prefHeight="119.0" prefWidth="178.0" spacing="20.0">
-                                             <children>
-                                                <RadioButton fx:id="iRadioButtonDay" mnemonicParsing="false" text="Last 24 Hours" />
-                                                <RadioButton fx:id="iRadioButtonWeek" mnemonicParsing="false" text="This Week" />
-                                                <RadioButton fx:id="iRadioButtonMonth" mnemonicParsing="false" text="This Month" />
-                                             </children>
-                                             <HBox.margin>
-                                                <Insets />
-                                             </HBox.margin></VBox>
-                                          <Button fx:id="btnAnalyze" disable="true" minHeight="100.0" minWidth="125.0" mnemonicParsing="false" onAction="#analyze" prefHeight="100.0" prefWidth="200.0" text="Analyze&#10;" textAlignment="JUSTIFY">
-                                             <font>
-                                                <Font name="Marlett" size="22.0" />
-                                             </font>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </AnchorPane>
-                          </items>
-                        </SplitPane>
-                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1920.0" minHeight="585.0" minWidth="160.0" prefHeight="596.0" prefWidth="160.0">
-                           <children>
-                              <SplitPane dividerPositions="0.5" maxHeight="1080.0" maxWidth="1920.0" minHeight="200.0" minWidth="164.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="164.0">
-                                 <items>
-                                    <StackedAreaChart fx:id="iStackedAreaChart" alternativeColumnFillVisible="true" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" title=". &gt; ! &gt; ?" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
-                                      <xAxis>
-                                        <NumberAxis side="BOTTOM" />
-                                      </xAxis>
-                                      <yAxis>
-                                        <NumberAxis side="LEFT" tickLabelsVisible="false" />
-                                      </yAxis>
-                                    </StackedAreaChart>
-                                    <TextArea fx:id="newsAlpha" editable="false" maxHeight="1080.0" maxWidth="1920.0" minHeight="55.0" minWidth="164.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="55.0" prefWidth="164.0" text="No data ..." wrapText="true">
-                                       <font>
-                                          <Font name="System Italic" size="12.0" />
-                                       </font></TextArea>
-                                 </items>
-                              </SplitPane>
-                              <SplitPane dividerPositions="0.5" maxHeight="1080.0" maxWidth="1920.0" minHeight="200.0" minWidth="164.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="164.0">
-                                <items>
-                                    <BarChart fx:id="iBarChart" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" title="! &lt;-&gt; ?" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
-                                      <xAxis>
-                                        <CategoryAxis side="BOTTOM" />
-                                      </xAxis>
-                                      <yAxis>
-                                        <NumberAxis side="LEFT" tickLabelsVisible="false" />
-                                      </yAxis>
-                                    </BarChart>
-                                    <TextArea fx:id="newsBeta" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="55.0" minWidth="164.0" prefHeight="55.0" prefWidth="164.0" text="No data ..." wrapText="true">
-                                       <font>
-                                          <Font name="System Italic" size="12.0" />
-                                       </font></TextArea>
-                                </items>
-                              </SplitPane>
-                              <SplitPane dividerPositions="0.5" maxHeight="1080.0" maxWidth="1920.0" minHeight="200.0" minWidth="164.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="164.0">
-                                <items>
-                                    <PieChart fx:id="iPieChart" />
-                                    <TextArea fx:id="newsGamma" editable="false" maxHeight="100.0" maxWidth="1920.0" minHeight="55.0" minWidth="164.0" prefHeight="55.0" prefWidth="164.0" text="No data ..." wrapText="true">
-                                       <font>
-                                          <Font name="System Italic" size="12.0" />
-                                       </font></TextArea>
-                                </items>
-                              </SplitPane>
-                           </children>
-                        </VBox>
+                        <Button fx:id="btnAnalyze" alignment="CENTER" disable="true" maxHeight="100.0" maxWidth="277.0" minHeight="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#analyze" prefHeight="100.0" prefWidth="277.0" text="Analyze&#10;" textAlignment="JUSTIFY">
+                           <font>
+                              <Font name="Marlett" size="20.0" />
+                           </font>
+                        </Button>
                      </children>
-                  </FlowPane>
+                  </VBox>
+                  <VBox alignment="CENTER" minHeight="119.0" minWidth="50.0" prefHeight="148.0" prefWidth="338.0">
+                     <children>
+                        <RadioButton fx:id="iRadioButtonDay" mnemonicParsing="false" text="Last 24 Hours">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton fx:id="iRadioButtonWeek" mnemonicParsing="false" text="This Week">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </RadioButton>
+                        <RadioButton fx:id="iRadioButtonMonth" mnemonicParsing="false" text="This Month">
+                           <font>
+                              <Font size="20.0" />
+                           </font>
+                        </RadioButton>
+                     </children>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="119.0" minWidth="199.0" prefHeight="148.0" prefWidth="544.0">
+                     <children>
+                        <ComboBox fx:id="mySourceBox" disable="true" minHeight="24.0" minWidth="200.0" prefHeight="60.0" prefWidth="320.0" promptText="Select source ..." VBox.vgrow="ALWAYS">
+                           <VBox.margin>
+                              <Insets top="15.0" />
+                           </VBox.margin>
+                        </ComboBox>
+                        <ProgressBar fx:id="iProgressBar" prefHeight="20.0" prefWidth="320.0" progress="0.0" />
+                     </children>
+                  </VBox>
                </children>
-            </VBox>
-         </children>
-      </Pane>
+            </HBox>
+         </bottom>
+         <right>
+            <GridPane minHeight="624.0" minWidth="612.0" prefHeight="624.0" prefWidth="612.0" BorderPane.alignment="CENTER">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <SplitPane orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" GridPane.columnIndex="1">
+                     <items>
+                        <StackedAreaChart fx:id="iStackedAreaChart" alternativeRowFillVisible="false" horizontalGridLinesVisible="false" horizontalZeroLineVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Punctuation marks" verticalGridLinesVisible="false" verticalZeroLineVisible="false">
+                          <xAxis>
+                            <NumberAxis autoRanging="false" side="BOTTOM" tickLabelsVisible="false" />
+                          </xAxis>
+                          <yAxis>
+                            <NumberAxis side="LEFT" tickLabelsVisible="false" />
+                          </yAxis>
+                        </StackedAreaChart>
+                     </items>
+                  </SplitPane>
+                  <SplitPane orientation="VERTICAL" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <items>
+                        <PieChart fx:id="iPieChart" labelsVisible="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" title="Bulls vs. Bears" />
+                     </items>
+                  </SplitPane>
+                  <SplitPane dividerPositions="0.33, 0.66" maxHeight="1080.0" maxWidth="1920.0" minHeight="200.0" minWidth="150.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="750.0">
+                     <items>
+                        <TextArea fx:id="iNewsAlpha" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" nodeOrientation="LEFT_TO_RIGHT" text="News Feed #1" wrapText="true">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </TextArea>
+                        <TextArea fx:id="iNewsBeta" editable="false" prefHeight="200.0" prefWidth="200.0" text="News Feed #2" wrapText="true">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </TextArea>
+                        <TextArea fx:id="iNewsDelta" editable="false" prefHeight="200.0" prefWidth="200.0" text="News Feed #3" wrapText="true">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font></TextArea>
+                     </items>
+                  </SplitPane>
+                  <SplitPane dividerPositions="0.33, 0.66" maxHeight="1080.0" maxWidth="1920.0" minHeight="200.0" minWidth="150.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="750.0" GridPane.rowIndex="1">
+                     <items>
+                        <TextArea fx:id="iNewsEpsilon" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="13.0" prefWidth="304.0" text="News Feed #4" wrapText="true">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </TextArea>
+                        <TextArea fx:id="iNewsIota" editable="false" prefHeight="169.0" prefWidth="304.0" text="News Feed #5" wrapText="true">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </TextArea>
+                        <TextArea fx:id="iNewsKappa" editable="false" prefHeight="37.0" prefWidth="304.0" text="News Feed #6" wrapText="true">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </TextArea>
+                     </items>
+                  </SplitPane>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </GridPane>
+         </right>
+      </BorderPane>
+      <Label text="Label" />
    </children>
 </AnchorPane>
