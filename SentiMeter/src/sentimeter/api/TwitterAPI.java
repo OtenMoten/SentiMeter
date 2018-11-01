@@ -47,7 +47,8 @@ public class TwitterAPI extends Task<Object> {
             this.iTwitter.setOAuthAccessToken(new AccessToken(this.iTokenKey, this.iTokenSecret));
             try {
                 // Print the profile of the current Twitter-API user.
-                System.out.println(this.iTwitter.verifyCredentials());
+                System.out.println("Current user: " + this.iTwitter.verifyCredentials().getName());
+                System.out.println("URL: " + this.iTwitter.verifyCredentials().getURL());
             } catch (TwitterException iException) {
                 System.err.println("##ERR## @ " + this.getClass() + " @ Constructor"
                         + "\n Message() = " + iException.getMessage());

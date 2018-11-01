@@ -25,4 +25,6 @@ public abstract class AbstractCollector extends Task<Object> {
 
     abstract public List getTimeline();
 
+    abstract public String getType();
+
 }

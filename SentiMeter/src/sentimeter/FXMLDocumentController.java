@@ -1,21 +1,25 @@
 package sentimeter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.SubScene;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.StackedAreaChart;
 import javafx.scene.chart.XYChart;
@@ -34,7 +38,6 @@ import sentimeter.collector.TwitterCollector;
 import sentimeter.gaugebar.GaugeBar;
 import sentimeter.templategauge.Section;
 import sentimeter.templategauge.TemplateGauge;
-import twitter4j.Status;
 
 public class FXMLDocumentController implements Initializable {
 
@@ -42,19 +45,9 @@ public class FXMLDocumentController implements Initializable {
     SubScene subScene;
 
     @FXML
-    StackPane myStackPane;
-
+    Button iButtonAnalyze;
     @FXML
-    Button btnAnalyze;
-
-    @FXML
-    Button command_One;
-    @FXML
-    Button command_Two;
-    @FXML
-    Button command_Three;
-    @FXML
-    Button command_Four;
+    Button iButtonReset;
 
     @FXML
     TextArea iNewsAlpha;
@@ -70,10 +63,7 @@ public class FXMLDocumentController implements Initializable {
     TextArea iNewsKappa;
 
     @FXML
-    WebView myWebView;
-
-    @FXML
-    ComboBox mySourceBox;
+    ComboBox iDropdown;
 
     @FXML
     RadioButton iRadioButtonDay;
@@ -90,75 +80,74 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     ProgressBar iProgressBar;
 
-    final ToggleGroup iToggleGroup = new ToggleGroup();
-
+    // Stuff for datamanagement.
     private TwitterAPI iTwitterAPI;
-
     private AbstractCollector iCollector;
 
-    private Section[] mySections;
-    private TemplateGauge myTGauge;
+    // Stuff for the GUI.
+    private NewsBarUpdater iNewsBarUpdater;
+    private final ToggleGroup iToggleGroup = new ToggleGroup();
+
+    // Thread- and task-related stuff.
+    private ExecutorService iExecuterNewsBar;
+    private ExecutorService iExecutorCollector;
+
+    // Stuff for the gauge
+    private Section[] iSections;
+    private TemplateGauge iTGauge;
     private double iSentiment;
-    private long lastTimerCall;
-    private AnimationTimer myAnimationTimer;
+    private final GaugeBar myGaugeBar = new GaugeBar();
 
-    final GaugeBar myGaugeBar = new GaugeBar();
-
-    double iBullishCounter = 1.0D;
-    double iBearishCounter = 1.0D;
-    int iQuestionmarksCounter = 1;
-    int iExclamationmarksCounter = 1;
-    int iDotCounter = 1;
+    // Stuff for the sentiment analysis.
+    private double iBullishCounter;
+    private double iBearishCounter;
+    private int iQuestionmarksCounter;
+    private int iExclamationmarksCounter;
+    private int iDotCounter;
 
     // Define a bu,llish-relevant set of words.
     List<String> iBullishWords = new ArrayList<>(Arrays.asList(
-            "Bull", "Bullish", "Profit", "Safety", "Win",
-            "All-In", "High", "Bump", "Bumping", "Pump", "Pumping",
-            "Buy", "Up", "Uptrend", "FOMO", "Invest", "Investing"
+            "Bull", "Bullish", "Sell", "Win"
     ));
 
     // Define a bu,llish-relevant set of words.
     List<String> iBearishWords = new ArrayList<>(Arrays.asList(
-            "Bear", "Bearish", "Risk", "Loss", "Suffering",
-            "Sell", "Low", "Drop", "Dropped", "Break",
-            "Crash", "Down", "Downtrend"
+            "Bear", "Bearish", "Buy", "Loss"
     ));
 
     public Group createGaugeGroup() {
 
-        this.mySections = new Section[]{
+        this.iSections = new Section[]{
             new Section(-10.0, -5.0, Color.RED),
             new Section(-5.0, 0.0, Color.ORANGE),
             new Section(0.0, 5.0, Color.YELLOW),
             new Section(5.0, 10.0, Color.YELLOWGREEN)
         };
 
-        this.myTGauge = new TemplateGauge();
-        this.myTGauge.setMinValue(-10);
-        this.myTGauge.setMaxValue(10);
+        this.iTGauge = new TemplateGauge();
+        this.iTGauge.setMinValue(-10);
+        this.iTGauge.setMaxValue(10);
         // If the current value of the SentiMeter is higher than 
         // the threshold, then a warning-sign is displayed in the SentiMeter.
-        this.myTGauge.setThreshold(5);
-        // Apply the Section-array 'mySections' to 'myTGauge'-object.
-        this.myTGauge.setSections(this.mySections);
+        this.iTGauge.setThreshold(5);
+        // Apply the Section-array 'iSections' to 'iTGauge'-object.
+        this.iTGauge.setSections(this.iSections);
 
-        this.lastTimerCall = System.nanoTime();
+        this.iTGauge.setLayoutX((this.subScene.getLayoutX() + this.subScene.getWidth()) / 5);
+        this.iTGauge.setLayoutY(this.subScene.getLayoutY() + this.subScene.getHeight() / 5);
 
-        this.myTGauge.setLayoutX((this.subScene.getLayoutX() + this.subScene.getWidth()) / 5);
-        this.myTGauge.setLayoutY(this.subScene.getLayoutY() + this.subScene.getHeight() / 5);
-
-        Group myGaugeBarGroup = new Group(this.myTGauge);
+        Group myGaugeBarGroup = new Group(this.iTGauge);
 
         this.subScene.setUserAgentStylesheet("StyleSheet.css");
 
-        this.myTGauge.setValue(1.0F);
-        this.myTGauge.setValue(0.0F);
+        this.iTGauge.setValue(1.0F);
+        this.iTGauge.setValue(0.0F);
 
         return myGaugeBarGroup;
 
     }
 
-    private double calculateSentiment(List<String> inputStatusesList) {
+    private double getSentiment(List<String> inputStatusesList) {
 
         this.iBullishCounter = 1.0D;
         this.iBearishCounter = 1.0D;
@@ -204,8 +193,10 @@ public class FXMLDocumentController implements Initializable {
 
         });
 
-        System.out.println("iBullishCounter = " + this.iBullishCounter);
-        System.out.println("iBearishCounter = " + this.iBearishCounter);
+        System.out.println("Bullish words = " + this.iBullishCounter);
+        System.out.println("Bearish words = " + this.iBearishCounter);
+        System.out.println("? = " + this.iExclamationmarksCounter);
+        System.out.println("! = " + this.iQuestionmarksCounter);
 
         if (this.iBullishCounter >= this.iBearishCounter) {
 
@@ -236,7 +227,7 @@ public class FXMLDocumentController implements Initializable {
     public String getSelectedSource() {
 
         // Check the source.
-        switch (this.mySourceBox.getSelectionModel().getSelectedItem().toString()) {
+        switch (this.iDropdown.getSelectionModel().getSelectedItem().toString()) {
 
             case "Andreas Antonopoulos":
                 return "aantonop";
@@ -305,8 +296,81 @@ public class FXMLDocumentController implements Initializable {
         }
     }
 
-    public void startGraphics() {
+    public void initiateConnection() {
 
+        // Set the Twitter login-credentials.
+        this.iTwitterAPI = new TwitterAPI(
+                "pOpe5ybA2BJnD58t7mV1E0gQj",
+                "EdsgWi8NzYMDRsfLeOZutkV69ZRnor2FXFECWX12SLyhMSf4gn",
+                "957668170394988544-SzR22oHCmCA42orZQoQZE492XPqHrbi",
+                "xDur4tDbbttekvljyvz9feBqQwbgeyTn29kOeo85k5viY"
+        );
+
+        //this.iLabel.textProperty().bind(this.iTwitterAPI.messageProperty());
+        iExecutorCollector = Executors.newFixedThreadPool(1);
+        iExecutorCollector.execute(this.iTwitterAPI);
+        iExecutorCollector.shutdown();
+
+    }
+
+    public void analyze() {
+
+        // Deactivate the analyze-button.
+        this.iButtonAnalyze.setDisable(true);
+        // Deactivate the dropdown menu.
+        this.iDropdown.setDisable(true);
+
+        Calendar iCalendar = Calendar.getInstance();
+
+        // Check the timeframe.
+        switch (((RadioButton) this.iToggleGroup.getSelectedToggle()).getText()) {
+            case "Last 24 Hours":
+                iCalendar.add(Calendar.DAY_OF_YEAR, -1);
+                break;
+            case "This Week":
+                iCalendar.add(Calendar.WEEK_OF_YEAR, -1);
+                break;
+            case "This Month":
+                iCalendar.add(Calendar.MONTH, -1);
+                break;
+            default:
+                System.err.println("No timeframe was choosen.");
+                System.err.println("##ERR## @ " + this.getClass() + " @ startGraphics()");
+
+        }
+
+        // Deactivate the togglegroup.
+        this.iToggleGroup.getToggles().forEach(toggle -> {
+            Node node = (Node) toggle;
+            node.setDisable(true);
+        });
+        // Deactivate the analyze-button because the change of the value in the togglegroup
+        // will trigger a listener.
+        //this.iButtonAnalyze.setDisable(true);
+
+        // Create a task.
+        this.iCollector = new TwitterCollector(this.iTwitterAPI.getTwitter(), getSelectedSource(), this.iProgressBar, iCalendar);
+
+        // Assign a thread to the executors.
+        this.iExecutorCollector = Executors.newFixedThreadPool(1);
+        this.iExecuterNewsBar = Executors.newFixedThreadPool(1);
+
+        // Set the task's final tasks.
+        this.iCollector.setOnSucceeded((succeededEvent) -> {
+            this.startGraphics();
+            this.iNewsBarUpdater = new NewsBarUpdater(this.iCollector, this.iNewsAlpha, this.iNewsBeta, this.iNewsDelta, this.iNewsEpsilon, this.iNewsIota, this.iNewsKappa);
+            this.iButtonReset.setDisable(false);
+            this.iDropdown.setDisable(true);
+            this.iExecuterNewsBar.execute(this.iNewsBarUpdater);
+            this.iExecuterNewsBar.shutdown();
+        });
+
+        this.iExecutorCollector.execute(this.iCollector);
+        this.iExecutorCollector.shutdown();
+
+    }
+
+    public void startGraphics() {
         List<String> iStatusListText = new ArrayList<>();
 
         for (int i = 0; i < ((TwitterCollector) this.iCollector).getTimeline().size(); i++) {
@@ -314,14 +378,16 @@ public class FXMLDocumentController implements Initializable {
         }
 
         // Calculate the sentiment.
-        this.iSentiment = calculateSentiment(iStatusListText);
+        this.iSentiment = getSentiment(iStatusListText);
 
         // StackedArea-chart
         // Dots
+        /*
         XYChart.Series iAreaDots = new XYChart.Series();
         iAreaDots.setName(".");
         iAreaDots.getData().add(new XYChart.Data(0, this.iDotCounter / 2));
         iAreaDots.getData().add(new XYChart.Data(100, this.iDotCounter / 2));
+         */
         // Exclamationmarks
         XYChart.Series iAreaExclamationmark = new XYChart.Series();
         iAreaExclamationmark.setName("!");
@@ -335,7 +401,7 @@ public class FXMLDocumentController implements Initializable {
 
         this.iStackedAreaChart.getData().removeAll();
         this.iStackedAreaChart.getData().clear();
-        this.iStackedAreaChart.getData().addAll(iAreaDots, iAreaExclamationmark, iAreaQuestionmark);
+        this.iStackedAreaChart.getData().addAll(iAreaExclamationmark, iAreaQuestionmark);
 
         // Pie-chart
         // Bull-Bear
@@ -349,102 +415,38 @@ public class FXMLDocumentController implements Initializable {
         this.iPieChart.getData().clear();
         this.iPieChart.setData(pieChartData);
 
-        // Feed the gauge with values.
-        this.myAnimationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                double lower = -10.0d;
-                double upper = 10.0d;
-                if (now > lastTimerCall + 3_000_000_000l) {
-                    myTGauge.setValue(iSentiment);
-                    //myTGauge.setValue(RND.nextDouble() * (upper - lower) + lower);
-                    lastTimerCall = now;
-                }
-            }
-        };
-
-        // Start the gauge.
-        this.myAnimationTimer.start();
+        this.iTGauge.setValue(iSentiment);
 
     }
 
-    public void initiateConnection() {
+    public void stop() {
+        this.iProgressBar.setProgress(0.0D);
+        this.iTGauge.setValue(0.0D);
+        this.iNewsBarUpdater.stopUpdate();
 
-        // Set the Twitter login-credentials.
-        this.iTwitterAPI = new TwitterAPI(
-                "pOpe5ybA2BJnD58t7mV1E0gQj",
-                "EdsgWi8NzYMDRsfLeOZutkV69ZRnor2FXFECWX12SLyhMSf4gn",
-                "957668170394988544-SzR22oHCmCA42orZQoQZE492XPqHrbi",
-                "xDur4tDbbttekvljyvz9feBqQwbgeyTn29kOeo85k5viY"
-        );
+        this.iDropdown.setDisable(false);
+        this.iButtonReset.setDisable(true);
+        this.iButtonAnalyze.setDisable(false);
+        // Delete the text in the news bars.
+        this.iNewsBarUpdater.clear();
 
-        // Set the task's running tasks..
-        this.iTwitterAPI.setOnRunning((successesEvent) -> {
-            this.btnAnalyze.setDisable(true);
+        // Deactivate the togglegroup.
+        this.iToggleGroup.getToggles().forEach(toggle -> {
+            Node node = (Node) toggle;
+            node.setDisable(false);
         });
 
-        // Set the task's final tasks..
-        this.iTwitterAPI.setOnSucceeded((succeededEvent) -> {
-            this.btnAnalyze.setDisable(false);
-        });
-
-        //this.iLabel.textProperty().bind(this.iTwitterAPI.messageProperty());
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(this.iTwitterAPI);
-        executorService.shutdown();
-
-    }
-
-    public void analyze() {
-
-        Calendar iCalendar = Calendar.getInstance();
-
-        // Check the timeframe.
-        switch (((RadioButton) this.iToggleGroup.getSelectedToggle()).getText()) {
-            case "Last 24 Hours":
-                iCalendar.add(Calendar.DAY_OF_YEAR, -1);
-                System.out.println("Calendar: " + iCalendar.get(Calendar.DAY_OF_YEAR));
-                break;
-            case "This Week":
-                iCalendar.add(Calendar.WEEK_OF_YEAR, -1);
-                System.out.println("Calendar: " + iCalendar.get(Calendar.WEEK_OF_YEAR));
-                break;
-            case "This Month":
-                iCalendar.add(Calendar.MONTH, -1);
-                System.out.println("Calendar: " + iCalendar.get(Calendar.MONTH));
-                break;
-            default:
-                System.err.println("No timeframe was choosen.");
-                System.err.println("##ERR## @ " + this.getClass() + " @ startGraphics()");
-
-        }
-
-        this.iCollector = new TwitterCollector(this.iTwitterAPI.getTwitter(), getSelectedSource(), this.iProgressBar, iCalendar);
-
-        // Set the task's final tasks.
-        this.iCollector.setOnSucceeded((succeededEvent) -> {
-            this.startGraphics();
-            this.setTextAreas();
-        });
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.execute(this.iCollector);
-        executorService.shutdown();
-
-    }
-
-    public void setTextAreas() {
-        Random iRandomGen = new Random();
-        this.iNewsAlpha.setText(((Status) this.iCollector.getTimeline().get(iRandomGen.nextInt(this.iCollector.getTimeline().size()))).getText());
-        this.iNewsBeta.setText(((Status) this.iCollector.getTimeline().get(iRandomGen.nextInt(this.iCollector.getTimeline().size()))).getText());
-        this.iNewsDelta.setText(((Status) this.iCollector.getTimeline().get(iRandomGen.nextInt(this.iCollector.getTimeline().size()))).getText());
-        this.iNewsEpsilon.setText(((Status) this.iCollector.getTimeline().get(iRandomGen.nextInt(this.iCollector.getTimeline().size()))).getText());
-        this.iNewsIota.setText(((Status) this.iCollector.getTimeline().get(iRandomGen.nextInt(this.iCollector.getTimeline().size()))).getText());
-        this.iNewsKappa.setText(((Status) this.iCollector.getTimeline().get(iRandomGen.nextInt(this.iCollector.getTimeline().size()))).getText());
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        // Initiate the class' variables.
+        this.iBullishCounter = 1.0D;
+        this.iBearishCounter = 1.0D;
+        this.iQuestionmarksCounter = 1;
+        this.iExclamationmarksCounter = 1;
+        this.iDotCounter = 1;
 
         // Connect to the Twitter API.
         this.initiateConnection();
@@ -452,8 +454,8 @@ public class FXMLDocumentController implements Initializable {
         // Past in the gauge in the subscene.
         this.subScene.setRoot(createGaugeGroup());
 
-        this.mySourceBox.getItems().removeAll(this.mySourceBox.getItems());
-        this.mySourceBox.getItems().addAll(
+        this.iDropdown.getItems().removeAll(this.iDropdown.getItems());
+        this.iDropdown.getItems().addAll(
                 "Andreas Antonopoulos",
                 "Bitcoin Magazine",
                 "BitMEX",
@@ -474,19 +476,14 @@ public class FXMLDocumentController implements Initializable {
                 "Roger Ver",
                 "Tim Draper",
                 "Vitalik Buterin");
-        this.mySourceBox.getSelectionModel().select(0);
+        this.iDropdown.getSelectionModel().select(0);
 
         // Assign the RadioButtons to a ToggleGroup.
         this.iRadioButtonDay.setToggleGroup(this.iToggleGroup);
         this.iRadioButtonWeek.setToggleGroup(this.iToggleGroup);
         this.iRadioButtonMonth.setToggleGroup(this.iToggleGroup);
 
-        this.iToggleGroup.selectedToggleProperty().addListener(((observable, oldValue, newValue) -> {
-            this.btnAnalyze.setDisable(false);
-            this.mySourceBox.setDisable(false);
-        }));
-
-        System.out.println("Controller was initialized.");
+        this.iRadioButtonDay.fire();
 
     }
 

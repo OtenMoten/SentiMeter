@@ -3,7 +3,6 @@ package sentimeter.collector;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import static java.util.stream.Collectors.toList;
 import javafx.scene.control.ProgressBar;
 import twitter4j.*;
 
@@ -38,7 +37,6 @@ public class TwitterCollector extends AbstractCollector {
                 this.iTwitter.getUserTimeline(this.iTarget, new Paging(iPageIndex, 200)).forEach((statusElement) -> {
                     if (statusElement.getCreatedAt().after(this.iDateLimit.getTime())) {
                         // Add the status to list if it's crypto-related.
-                        System.out.println(statusElement.getCreatedAt());
                         this.iStatusList.add(statusElement);
                     }
                 });
@@ -47,6 +45,7 @@ public class TwitterCollector extends AbstractCollector {
                         + "\n Message() = " + iException.getMessage());
             }
         }
+        System.out.println("Last element by: " + this.iStatusList.get(this.iStatusList.size() - 1).getCreatedAt());
     }
 
     @Override
@@ -60,6 +59,11 @@ public class TwitterCollector extends AbstractCollector {
     @Override
     public List getTimeline() {
         return this.iStatusList;
+    }
+
+    @Override
+    public String getType() {
+        return "Twitter";
     }
 
 }
